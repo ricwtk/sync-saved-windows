@@ -1,5 +1,4 @@
 # SyncSavedWindows
----
 
 Sync saved windows. Inspired by TabCloud (https://addons.mozilla.org/en-GB/firefox/addon/tabcloud/).
 
