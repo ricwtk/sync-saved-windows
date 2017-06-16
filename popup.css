@@ -1,0 +1,62 @@
+* {
+  color: #555555;
+  /*font-size: 12px;*/
+  margin: 0;
+  padding: 0;
+}
+
+.section {
+  padding: 10px 40px;
+  text-align: center;
+}
+
+.window, .nosaveddiv {
+  background-color: #ddd;
+}
+
+.window {
+  display: table-row;
+}
+
+.wrapper {
+  display: table;
+  width: 100%;
+}
+
+.tabswrapper, .nosaveddiv {
+  padding: 10px;
+  text-align: center;
+}
+
+.tabswrapper {
+  display: table-cell;
+}
+
+.savewinbtn, .delwinbtn, .openwinbtn {
+  color: white;
+  display: table-cell;
+  text-align: center;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.savewinbtn { background-color: #4caf50; }
+.delwinbtn { background-color: #f44336; }
+.openwinbtn { background-color: #673ab7; }
+
+.addsep {
+  border-bottom: 1px solid #ccc;
+}
+
+.separation {
+  border: 1px solid #ccc;
+}
+
+.favicon {
+  height: 15px;
+  margin: 1px;
+}
+
+#removeallsaved {
+  cursor: pointer;
+}

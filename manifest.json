@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "Sync Saved Windows",
+  "version": "1.0",
+  "description": "Synchronise saved windows",
+  "icons": {
+    "48": "icons/icon.png",
+    "96": "icons/icon.png"
+  },
+
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": "icons/icon.png",
+    "default_title": "Sync Saved Windows",
+    "default_popup": "popup.html"
+  },
+
+  "applications": {
+    "gecko": {
+      "id": "sync-saved-windows@ricwtk",
+      "strict_min_version": "42.0"
+    }
+  }
+
+}
