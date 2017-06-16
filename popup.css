@@ -38,6 +38,7 @@
   text-align: center;
   cursor: pointer;
   padding: 10px;
+  vertical-align: middle;
 }
 
 .savewinbtn { background-color: #4caf50; }
