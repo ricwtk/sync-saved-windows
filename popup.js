@@ -15,6 +15,7 @@ function getSaved(saved) {
       for (let w of allsavedwindows) {
         var singlewin = document.createElement("div");
         singlewin.setAttribute("class", "window");
+        singlewin.setAttribute("title", "Click on an icon to open tab in this window");
         var tabswrapper = document.createElement("div");
         tabswrapper.setAttribute("class", "tabswrapper addsep");
         for (let t of w) {
@@ -22,11 +23,13 @@ function getSaved(saved) {
           singletab.setAttribute("src", t.favIconUrl);
           singletab.setAttribute("class", "favicon");
           singletab.setAttribute("title", t.title);
+          singletab.addEventListener("click", function() {openInTab(t)});
           tabswrapper.appendChild(singletab);
         }
         singlewin.appendChild(tabswrapper);
         var delwin = document.createElement("div");
         delwin.setAttribute("class", "delwinbtn addsep");
+        delwin.setAttribute("title", "Delete from saved list");
         delwin.appendChild(document.createTextNode("\u2A2F"));
         (function(i) {
           delwin.addEventListener("click", function() { deleteWinByArrIdx(i) });
@@ -34,6 +37,7 @@ function getSaved(saved) {
         singlewin.appendChild(delwin);
         var openwin = document.createElement("div");
         openwin.setAttribute("class", "openwinbtn addsep");
+        openwin.setAttribute("title", "Open in new window");
         openwin.appendChild(document.createTextNode("\u21B3"));
         (function(i) { 
           openwin.addEventListener("click", function() { openWinByArrIdx(i) }); 
@@ -70,7 +74,7 @@ function openWinByArrIdx(i) {
 function showNoSaved() {
   var nosaved = document.createElement("div");
   nosaved.setAttribute("class", "nosaveddiv");
-  nosaved.appendChild(document.createTextNode("No saved windows"));
+  nosaved.appendChild(document.createTextNode("No saved window"));
   appendToSavedList([nosaved]);
 }
 
@@ -80,6 +84,10 @@ function appendToSavedList(el) {
   for (let e of el) {
     swin.appendChild(e);
   }
+}
+
+function openInTab(t) {
+	browser.tabs.create({active: true, url: t.url});
 }
 
 // remove all saved windows
@@ -109,6 +117,7 @@ function listwindows(tabs) {
   for (let w of allwindows) {
     var singlewin = document.createElement("div");
     singlewin.setAttribute("class", "window");
+    singlewin.setAttribute("title", "Click on an icon to switch to tab");
     var tabswrapper = document.createElement("div");
     tabswrapper.setAttribute("class", "tabswrapper addsep");
     for (let t of w) {
@@ -122,6 +131,7 @@ function listwindows(tabs) {
     singlewin.appendChild(tabswrapper);
     var savewin = document.createElement("div");
     savewin.setAttribute("class", "savewinbtn addsep");
+    savewin.setAttribute("title", "Save window")
     savewin.appendChild(document.createTextNode("\uD83D\uDFA1"));
     savewin.addEventListener("click", function() {saveWin(w[0].windowId)});
     singlewin.appendChild(savewin);
@@ -139,8 +149,8 @@ function listwindows(tabs) {
 }
 
 function switchTo(wId, tId) {
-  var t = browser.tabs.update(tId, {active: true});
-  var w = browser.windows.update(wId, {focused: true});
+  browser.tabs.update(tId, {active: true});
+  browser.windows.update(wId, {focused: true});
 }
 
 function saveWin(wId) {
