@@ -10,6 +10,12 @@
   text-align: center;
 }
 
+.iconsection {
+  text-align: right;
+  padding: 5px;
+  padding-bottom: 0px;
+}
+
 .window, .nosaveddiv {
   background-color: #ddd;
 }
@@ -25,11 +31,20 @@
 
 .tabswrapper, .nosaveddiv {
   padding: 10px;
-  text-align: center;
 }
 
 .tabswrapper {
-  display: table-cell;
+  display: flex;
+  width: 230px;
+  justify-content: center;
+}
+
+.favicon {
+  color: #673AB7;
+}
+
+.tabswrapper > span {
+  display: flex;
 }
 
 .savewinbtn, .delwinbtn, .openwinbtn {
@@ -39,6 +54,9 @@
   cursor: pointer;
   padding: 10px;
   vertical-align: middle;
+}
+.savewinbtn > i, .delwinbtn > i, .openwinbtn > i {
+  color: inherit;
 }
 
 .savewinbtn { background-color: #4caf50; }
@@ -60,4 +78,139 @@
 
 #removeallsaved {
   cursor: pointer;
+}
+
+.slideout {
+  width: 90%;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: #fff;
+  box-shadow: 5px 0px 20px 0px #444;
+  display: grid;
+  grid-area: auto;
+  grid-template-rows: repeat(2, 1fr) auto;
+  grid-template-columns: auto;
+  /*justify-item: stretch;*/
+}
+
+.hide {
+  display: none;
+}
+
+.slideout * {
+  justify-self: center;
+  align-self: center;
+}
+
+.miwrapper:nth-child(3) {
+  justify-self: right;
+  padding: 10px;
+}
+
+.miwrapper {
+  text-align: center;
+}
+
+.mi {
+}
+
+#storageselect {
+}
+
+#closemenu {
+  cursor: pointer;
+}
+
+.iconwrapper {
+  display: inline-block;
+  position: relative;
+  height: 30px;
+  width: 30px;
+  overflow: hidden;
+  /*border: 1px solid;*/
+}
+
+.displaylist {
+  display: none;
+}
+
+.showdisplay {
+  display: inline-block;
+}
+
+.storelist {
+  opacity: 0.3;
+  cursor: pointer;
+}
+
+.storeselected {
+  opacity: 1;
+  border: 1px dashed;
+  border-radius: 2px;
+  border-color: #4caf50;
+}
+
+.icon {
+  position: absolute;
+}
+
+#preference {
+  cursor: pointer;
+}
+
+.iconpref {
+  font-size: 25px;
+  text-align: center;
+  line-height: 30px;
+  width: 100%;
+}
+
+.iconlocal {
+  font-size: 25px;
+  text-align: center;
+  line-height: 25px;
+  width: 100%;
+}
+
+.icongdrive {
+  clip-path: inset(5px 5px 5px 5px);
+  width: 150%;
+  left: -25%;
+  top: -25%;
+}
+
+.iconodrive {
+  height: 110%;
+  left: -5px;
+}
+
+.icondbox {
+  height: 30px;
+}
+
+#storelocal {
+}
+
+#storegdriveicon {
+}
+
+#storeodriveicon {
+}
+
+#storedboxicon {
+}
+
+#signinbutton {
+}
+
+.signinbanner {
+  width: 90%;
+  cursor: pointer;
+  text-align: center;
+}
+
+.signinbanner:hover {
+  box-shadow: 0px 0px 2px 0px #4285F4;
 }

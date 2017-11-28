@@ -2,16 +2,52 @@
 
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">    
     <link rel="stylesheet" href="popup.css"/>
+    <script src="js/vue.min.js"></script>
   </head>
 
   <body>
-    <div class="section">Saved windows <span id="removeallsaved" title="Remove all saved windows">&#x2A2F</span></div>
-    <div class="wrapper" id="savedwindows"></div>
+    <div id="main">
+      <div class="section">Saved windows <span id="removeallsaved" title="Remove all saved windows">&#x2A2F</span></div>
+      <div class="wrapper" id="savedwindows"></div>
 
-    <div class="section">Opened windows</div>
-    <div class="wrapper" id="openedwindows"></div>
-    <script src="popup.js"></script>
+      <div class="section">Opened windows</div>
+      <div class="wrapper" id="openedwindows">
+        <single-window v-for="window in openedWindows" :window="window"></single-window>
+      </div>
+      <div class="iconsection" id="signinicon">
+        <span class="iconwrapper displaylist" id="displocal"><span class="icon iconlocal">&#x1f5a5;</span></span>
+        <span class="iconwrapper displaylist" id="dispgdrive"><img class="icon icongdrive" src="./icons/google_signedin.png"></span>
+        <span class="iconwrapper displaylist" id="dispodrive"><img class="icon iconodrive" src="./icons/onedrive_signedin.png"></span>
+        <span class="iconwrapper displaylist" id="dispdbox"><img class="icon icondbox" src="./icons/dropbox_signedin.png"></span>
+        <span class="iconwrapper" id="preference" title="Preferences"><span class="icon iconpref">&#x2699;</span></span>
+      </div>
+
+      <div class="slideout hide" id="menu">
+        <div class="miwrapper"><span class="mi" id="storageselect">
+          Save windows on:<br>
+          <span class="iconwrapper storelist storeselected" id="storelocal"><span class="icon iconlocal">&#x1f5a5;</span></span>
+          <span class="iconwrapper storelist" id="storegdrive"><img class="icon icongdrive" id="storegdriveicon" src="./icons/google_signedin.png"></span>
+          <span class="iconwrapper storelist" id="storeodrive"><img class="icon iconodrive" id="storeodriveicon" src="./icons/onedrive_signedin.png"></span>
+          <span class="iconwrapper storelist" id="storedbox"><img class="icon icondbox" id="storedboxicon" src="./icons/dropbox_signedin.png"></span>
+        </span></div>
+        <div class="miwrapper"><span class="mi" id="signinbutton"></span></div>
+        <div class="miwrapper"><span class="mi" id="closemenu" title="Close menu">&#x2A2F</span></div>
+      </div>
+    </div>
+
+    <!-- <script src="https://apis.google.com/js/api.js" id="gapiscript"></script> -->
+    <!-- <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()"> -->
+    <!-- <script src="general.js"></script>
+    <script src="local.js"></script>
+    <script src="dbox.js"></script>
+    <script src="gdrive.js"></script>
+    <script src="odrive.js"></script>
+    <script src="storagefunction.js"></script> -->
+    <script src="js/popup.js"></script>
   </body>
 </html>
