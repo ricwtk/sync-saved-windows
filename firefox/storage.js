@@ -1,7 +1,6 @@
 function getSavedWindows() {
   // local
   browser.storage.local.get("sswin").then(res => {
-    console.log(res, JSON.stringify(res.sswin));
     if (res['sswin'] != undefined) {
       vueApp.savedWindows = res['sswin'];
     } else {
@@ -24,18 +23,18 @@ function saveWindowToStorage(win) {
   if (winToSave.tabs.length > 0) {
     vueApp.savedWindows.push(winToSave);
     // local
-    saveToStorage(vueApp.savedWindows).then();
+    saveToStorage(vueApp.savedWindows);
   }
 }
 
 function removeWindowFromStorage(windowIndex, rootList) {
   rootList.splice(windowIndex, 1);
   // local
-  saveToStorage(rootList).then();
+  saveToStorage(rootList);
 }
 
 function saveToStorage(toSave) {
-  return browser.storage.local.set({
+  browser.storage.local.set({
     "sswin": toSave
   });
 }

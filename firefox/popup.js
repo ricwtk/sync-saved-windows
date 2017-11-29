@@ -260,7 +260,6 @@ Vue.component('single-window', {
       saveWindowToStorage(this.window);
     },
     removeWindow: function () {
-      console.log(this.windowIndex, this.rootList);
       removeWindowFromStorage(this.windowIndex, this.rootList);
     }
   },
@@ -284,7 +283,9 @@ Vue.component('single-tab', {
         browser.tabs.update(this.tab.id, {active: true});
         browser.windows.update(this.tab.windowId, {focused: true});
       } else if (this.group == "saved") {
-
+        browser.tabs.create({
+          url: this.tab.url
+        });
       }
     }
   },
