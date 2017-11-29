@@ -10,14 +10,35 @@
 
   <body>
     <div id="main">
-      <div class="section">Saved windows <span id="removeallsaved" title="Remove all saved windows">&#x2A2F</span></div>
-      <div class="wrapper" id="savedwindows"></div>
+      <div class="section">Saved windows</div>
+      <template v-if="savedWindows.length == 0">
+        <div class="window">
+          <div class="tabswrapper">
+            Saved windows will be displayed here
+          </div>
+        </div>
+      </template>
+      <template>
+        <div class="window" id="remove-all-saved" @click="removeSaved">
+          <div class="tabswrapper">
+            Remove all saved windows
+          </div>
+        </div>
+      </template>
+      <single-window v-for="(window, index) in savedWindows" 
+        :window="window" 
+        actions="dr"
+        :not-last="index != (savedWindows.length-1)">
+      </single-window>
 
       <div class="section">Opened windows</div>
-      <div class="wrapper" id="openedwindows">
-        <single-window v-for="window in openedWindows" :window="window"></single-window>
-      </div>
-      <div class="iconsection" id="signinicon">
+      <single-window v-for="(window, index) in openedWindows" 
+        :window="window" 
+        actions="s"
+        :not-last="index != (openedWindows.length-1)">
+      </single-window>
+
+      <!-- <div class="iconsection" id="signinicon">
         <span class="iconwrapper displaylist" id="displocal"><span class="icon iconlocal">&#x1f5a5;</span></span>
         <span class="iconwrapper displaylist" id="dispgdrive"><img class="icon icongdrive" src="./icons/google_signedin.png"></span>
         <span class="iconwrapper displaylist" id="dispodrive"><img class="icon iconodrive" src="./icons/onedrive_signedin.png"></span>
@@ -35,7 +56,7 @@
         </span></div>
         <div class="miwrapper"><span class="mi" id="signinbutton"></span></div>
         <div class="miwrapper"><span class="mi" id="closemenu" title="Close menu">&#x2A2F</span></div>
-      </div>
+      </div> -->
     </div>
 
     <!-- <script src="https://apis.google.com/js/api.js" id="gapiscript"></script> -->

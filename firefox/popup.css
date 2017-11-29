@@ -5,212 +5,74 @@
   padding: 0;
 }
 
+#main {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+}
+
 .section {
   padding: 10px 40px;
   text-align: center;
 }
 
-.iconsection {
-  text-align: right;
-  padding: 5px;
-  padding-bottom: 0px;
-}
-
-.window, .nosaveddiv {
-  background-color: #ddd;
-}
-
-.window {
-  display: table-row;
-}
-
-.wrapper {
-  display: table;
-  width: 100%;
-}
-
-.tabswrapper, .nosaveddiv {
-  padding: 10px;
-}
-
-.tabswrapper {
-  display: flex;
-  width: 230px;
-  justify-content: center;
-}
-
-.favicon {
-  color: #673AB7;
-}
-
-.tabswrapper > span {
-  display: flex;
-}
-
-.savewinbtn, .delwinbtn, .openwinbtn {
+#remove-all-saved {
+  background-color: #F44336;
+  border: 3px solid #f44336;
   color: white;
-  display: table-cell;
-  text-align: center;
   cursor: pointer;
-  padding: 10px;
-  vertical-align: middle;
 }
-.savewinbtn > i, .delwinbtn > i, .openwinbtn > i {
+
+#remove-all-saved:hover {
+  background-color: #e57373;
+}
+
+#remove-all-saved * {
   color: inherit;
 }
 
-.savewinbtn { background-color: #4caf50; }
-.delwinbtn { background-color: #f44336; }
-.openwinbtn { background-color: #673ab7; }
-
-.addsep {
-  border-bottom: 1px solid #ccc;
-}
-
-.separation {
-  border: 1px solid #ccc;
+#remove-all-saved > .tabswrapper {
+  padding: 0px;
 }
 
 .favicon {
   height: 15px;
   margin: 1px;
+  color: #673AB7;
 }
 
-#removeallsaved {
-  cursor: pointer;
+.window {
+  display: flex;
+  background-color: #ddd;
 }
 
-.slideout {
-  width: 90%;
-  height: 100%;
-  position: absolute;
-  right: 0;
-  top: 0;
-  background-color: #fff;
-  box-shadow: 5px 0px 20px 0px #444;
-  display: grid;
-  grid-area: auto;
-  grid-template-rows: repeat(2, 1fr) auto;
-  grid-template-columns: auto;
-  /*justify-item: stretch;*/
-}
-
-.hide {
-  display: none;
-}
-
-.slideout * {
-  justify-self: center;
-  align-self: center;
-}
-
-.miwrapper:nth-child(3) {
-  justify-self: right;
+.tabswrapper {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   padding: 10px;
 }
 
-.miwrapper {
-  text-align: center;
-}
-
-.mi {
-}
-
-#storageselect {
-}
-
-#closemenu {
+.savewinbtn, .delwinbtn, .openwinbtn {
+  padding: 7px;
+  color: white;
+  border: 3px solid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   cursor: pointer;
 }
 
-.iconwrapper {
-  display: inline-block;
-  position: relative;
-  height: 30px;
-  width: 30px;
-  overflow: hidden;
-  /*border: 1px solid;*/
-}
+.savewinbtn { background-color: #4caf50; border-color: #4caf50; }
+.delwinbtn { background-color: #f44336; border-color: #f44336; }
+.openwinbtn { background-color: #673ab7; border-color: #673ab7; }
 
-.displaylist {
-  display: none;
-}
+.savewinbtn:hover { background-color: #81C784; }
+.delwinbtn:hover { background-color: #E57373; }
+.openwinbtn:hover { background-color: #9575CD; }
 
-.showdisplay {
-  display: inline-block;
-}
-
-.storelist {
-  opacity: 0.3;
-  cursor: pointer;
-}
-
-.storeselected {
-  opacity: 1;
-  border: 1px dashed;
-  border-radius: 2px;
-  border-color: #4caf50;
-}
-
-.icon {
-  position: absolute;
-}
-
-#preference {
-  cursor: pointer;
-}
-
-.iconpref {
-  font-size: 25px;
-  text-align: center;
-  line-height: 30px;
-  width: 100%;
-}
-
-.iconlocal {
-  font-size: 25px;
-  text-align: center;
-  line-height: 25px;
-  width: 100%;
-}
-
-.icongdrive {
-  clip-path: inset(5px 5px 5px 5px);
-  width: 150%;
-  left: -25%;
-  top: -25%;
-}
-
-.iconodrive {
-  height: 110%;
-  left: -5px;
-}
-
-.icondbox {
-  height: 30px;
-}
-
-#storelocal {
-}
-
-#storegdriveicon {
-}
-
-#storeodriveicon {
-}
-
-#storedboxicon {
-}
-
-#signinbutton {
-}
-
-.signinbanner {
-  width: 90%;
-  cursor: pointer;
-  text-align: center;
-}
-
-.signinbanner:hover {
-  box-shadow: 0px 0px 2px 0px #4285F4;
+.addsep {
+  border-bottom: 2px solid #ccc;
 }

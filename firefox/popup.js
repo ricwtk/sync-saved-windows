@@ -252,18 +252,19 @@
 // }
 
 Vue.component('single-window', {
-  props: ['window'],
+  props: ['window', 'actions', 'notLast'],
   created: function () {
     console.log(this.window.tabs.length);
+    console.log(this.actions, this.notLast);
   },
   template: `
-    <div class="window" title="Click on an icon to switch to tab">
-      <div class="tabswrapper addsep">
+    <div :class="{ window: true, addsep: notLast }" title="Click on an icon to switch to tab">
+      <div class="tabswrapper">
         <single-tab v-for="tab in window.tabs" :tab="tab"></single-tab>
       </div>
-      <div class="savewinbtn addsep" title="Save window"><i class="fa fa-plus"></i></div>
-      <div class="delwinbtn addsep" title="Delete window"><i class="fa fa-times"></i></div>
-      <div class="openwinbtn addsep" title="Restore window"><i class="fa fa-external-link"></i></div>
+      <div v-if="actions.includes('s')" class="savewinbtn fa fa-plus" title="Save window"></div>
+      <div v-if="actions.includes('d')" class="delwinbtn fa fa-times" title="Delete window"></div>
+      <div v-if="actions.includes('r')" class="openwinbtn fa fa-window-restore" title="Restore window"></div>
     </div>
   `
 });
@@ -277,17 +278,16 @@ Vue.component('single-tab', {
     }
   },
   template: `
-    <span>
-      <img v-if="tab.favIconUrl" :src="tab.favIconUrl" class="favicon" :title="tab.title" @click="onClick">
-      <i v-else class="fa fa-question-circle favicon" :title="tab.title" @click="onClick"></i>
-    </span>
+    <img v-if="tab.favIconUrl" :src="tab.favIconUrl" class="favicon" :title="tab.title" @click="onClick">
+    <i v-else class="fa fa-question-circle favicon" :title="tab.title" @click="onClick"></i>
   `
 });
 
 var app = new Vue({
   el: "#main",
   data: {
-    openedWindows: []
+    openedWindows: [],
+    savedWindows: []
   },
   created: function () {
     browser.tabs.query({}).then((tabs) => {
@@ -310,5 +310,10 @@ var app = new Vue({
       this.openedWindows.sort((w1,w2) => w1.index - w2.index);
       console.log(JSON.stringify(this.openedWindows));
     });
+  },
+  methods: {
+    removeSaved: function () {
+      console.log("removeSaved");
+    }
   }
 })
