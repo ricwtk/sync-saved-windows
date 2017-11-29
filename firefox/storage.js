@@ -11,9 +11,21 @@ function getSavedWindows() {
 }
 
 function saveWindowToStorage(win) {
-  vueApp.savedWindows.push(win);
-  // local
-  saveToStorage(vueApp.savedWindows).then();
+  // remove tabs of which the tabs.create cannot be used, i.e.
+  // chrome: URLs -- javascript: URLs -- data: URLs -- file: URLs -- about: URLs
+  let winToSave = {
+    tabs: win.tabs.filter(tab => !tab.url.startsWith("chrome") 
+      && !tab.url.startsWith("javascript")
+      && !tab.url.startsWith("data")
+      && !tab.url.startsWith("file")
+      && !tab.url.startsWith("about")
+    )
+  };
+  if (winToSave.tabs.length > 0) {
+    vueApp.savedWindows.push(winToSave);
+    // local
+    saveToStorage(vueApp.savedWindows).then();
+  }
 }
 
 function removeWindowFromStorage(windowIndex, rootList) {

@@ -252,7 +252,7 @@
 // }
 
 Vue.component('single-window', {
-  props: ['window', 'actions', 'notLast', 'rootList', 'windowIndex'],
+  props: ['window', 'actions', 'notLast', 'rootList', 'windowIndex', 'group'],
   created: function () {
   },
   methods: {
@@ -267,7 +267,7 @@ Vue.component('single-window', {
   template: `
     <div :class="{ window: true, addsep: notLast }" title="Click on an icon to switch to tab">
       <div class="tabswrapper">
-        <single-tab v-for="tab in window.tabs" :tab="tab"></single-tab>
+        <single-tab v-for="tab in window.tabs" :tab="tab" :group="group"></single-tab>
       </div>
       <div v-if="actions.includes('s')" class="savewinbtn fa fa-plus" title="Save window" @click="saveWindow"></div>
       <div v-if="actions.includes('d')" class="delwinbtn fa fa-times" title="Delete window" @click="removeWindow"></div>
@@ -277,11 +277,15 @@ Vue.component('single-window', {
 });
 
 Vue.component('single-tab', {
-  props: ['tab'],
+  props: ['tab', 'group'],
   methods: {
     onClick: function () {
-      browser.tabs.update(this.tab.id, {active: true});
-      browser.windows.update(this.tab.windowId, {focused: true});
+      if (this.group == "opened") {
+        browser.tabs.update(this.tab.id, {active: true});
+        browser.windows.update(this.tab.windowId, {focused: true});
+      } else if (this.group == "saved") {
+
+      }
     }
   },
   template: `

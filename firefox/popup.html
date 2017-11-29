@@ -24,7 +24,8 @@
           :window-index="index"
           :window="window" 
           actions="dr"
-          :not-last="index != (savedWindows.length-1)">
+          :not-last="index != (savedWindows.length-1)"
+          group="saved">
         </single-window>
         <div class="window" id="remove-all-saved" @click="removeSaved">
           <div class="tabswrapper">
@@ -39,7 +40,8 @@
         :window-index="index"
         :window="window" 
         actions="s"
-        :not-last="index != (openedWindows.length-1)">
+        :not-last="index != (openedWindows.length-1)"
+        group="opened">
       </single-window>
 
       <!-- <div class="iconsection" id="signinicon">
