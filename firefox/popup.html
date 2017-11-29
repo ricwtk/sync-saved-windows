@@ -18,21 +18,25 @@
           </div>
         </div>
       </template>
-      <template>
+      <template v-else>
+        <single-window v-for="(window, index) in savedWindows" 
+          :root-list="savedWindows"
+          :window-index="index"
+          :window="window" 
+          actions="dr"
+          :not-last="index != (savedWindows.length-1)">
+        </single-window>
         <div class="window" id="remove-all-saved" @click="removeSaved">
           <div class="tabswrapper">
             Remove all saved windows
           </div>
         </div>
       </template>
-      <single-window v-for="(window, index) in savedWindows" 
-        :window="window" 
-        actions="dr"
-        :not-last="index != (savedWindows.length-1)">
-      </single-window>
-
+      
       <div class="section">Opened windows</div>
       <single-window v-for="(window, index) in openedWindows" 
+        :root-list="openedWindows"
+        :window-index="index"
         :window="window" 
         actions="s"
         :not-last="index != (openedWindows.length-1)">
@@ -69,6 +73,7 @@
     <script src="gdrive.js"></script>
     <script src="odrive.js"></script>
     <script src="storagefunction.js"></script> -->
+    <script src="storage.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

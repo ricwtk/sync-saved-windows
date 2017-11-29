@@ -252,18 +252,25 @@
 // }
 
 Vue.component('single-window', {
-  props: ['window', 'actions', 'notLast'],
+  props: ['window', 'actions', 'notLast', 'rootList', 'windowIndex'],
   created: function () {
-    console.log(this.window.tabs.length);
-    console.log(this.actions, this.notLast);
+  },
+  methods: {
+    saveWindow: function () {
+      saveWindowToStorage(this.window);
+    },
+    removeWindow: function () {
+      console.log(this.windowIndex, this.rootList);
+      removeWindowFromStorage(this.windowIndex, this.rootList);
+    }
   },
   template: `
     <div :class="{ window: true, addsep: notLast }" title="Click on an icon to switch to tab">
       <div class="tabswrapper">
         <single-tab v-for="tab in window.tabs" :tab="tab"></single-tab>
       </div>
-      <div v-if="actions.includes('s')" class="savewinbtn fa fa-plus" title="Save window"></div>
-      <div v-if="actions.includes('d')" class="delwinbtn fa fa-times" title="Delete window"></div>
+      <div v-if="actions.includes('s')" class="savewinbtn fa fa-plus" title="Save window" @click="saveWindow"></div>
+      <div v-if="actions.includes('d')" class="delwinbtn fa fa-times" title="Delete window" @click="removeWindow"></div>
       <div v-if="actions.includes('r')" class="openwinbtn fa fa-window-restore" title="Restore window"></div>
     </div>
   `
@@ -283,18 +290,19 @@ Vue.component('single-tab', {
   `
 });
 
-var app = new Vue({
+var vueApp = new Vue({
   el: "#main",
   data: {
     openedWindows: [],
     savedWindows: []
   },
   created: function () {
+    // get opened windows
     browser.tabs.query({}).then((tabs) => {
       for (let tab of tabs) {
-        let window = this.openedWindows.find(w => w.windowId == tab.windowId);
-        if (window !== undefined) {
-          window.tabs.push(tab);
+        let win = this.openedWindows.find(w => w.windowId == tab.windowId);
+        if (win !== undefined) {
+          win.tabs.push(tab);
         } else {
           this.openedWindows.push({
             windowId: tab.windowId,
@@ -303,17 +311,19 @@ var app = new Vue({
         }
       }
       // sort tabs
-      for (let window of this.openedWindows) {
-        window.tabs.sort((t1,t2) => t1.index - t2.index);
+      for (let win of this.openedWindows) {
+        win.tabs.sort((t1,t2) => t1.index - t2.index);
       }
       // sort windows
       this.openedWindows.sort((w1,w2) => w1.index - w2.index);
-      console.log(JSON.stringify(this.openedWindows));
     });
+
+    // get saved windows
+    getSavedWindows();
   },
   methods: {
     removeSaved: function () {
-      console.log("removeSaved");
+      removeAllWindowsFromStorage();
     }
   }
 })
