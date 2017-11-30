@@ -21,18 +21,11 @@
   border: 3px solid #f44336;
   color: white;
   cursor: pointer;
+  text-align: center;
 }
 
 #remove-all-saved:hover {
   background-color: #e57373;
-}
-
-#remove-all-saved * {
-  color: inherit;
-}
-
-#remove-all-saved > .tabswrapper {
-  padding: 0px;
 }
 
 .favicon {
@@ -75,4 +68,39 @@
 
 .addsep {
   border-bottom: 2px solid #ccc;
+}
+
+.vsep {
+  height: 5px;
+}
+
+#status {
+  background-color: #607D8B;
+  color: white;
+  padding: 2px;
+  text-align: center;
+}
+
+.button-row {
+  display: flex;
+}
+
+.button-row > * {
+  flex-grow: 1;
+  text-align: center;
+  border: 3px solid #607d8b;
+  padding: 5px;
+  cursor: pointer;
+  color: white;
+  background-color: #607d8b;
+}
+
+#sign-in-out:hover {
+  background-color: #d34836;
+  border-color: #d34836;
+}
+
+#help:hover {
+  background-color: #795548;
+  border-color: #795548;
 }

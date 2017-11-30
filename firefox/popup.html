@@ -27,10 +27,8 @@
           :not-last="index != (savedWindows.length-1)"
           group="saved">
         </single-window>
-        <div class="window" id="remove-all-saved" @click="removeSaved">
-          <div class="tabswrapper">
-            Remove all saved windows
-          </div>
+        <div id="remove-all-saved" @click="removeSaved">
+          Remove all saved windows
         </div>
       </template>
       
@@ -43,6 +41,17 @@
         :not-last="index != (openedWindows.length-1)"
         group="opened">
       </single-window>
+
+      <div class="vsep"></div>
+
+      <div id="status">
+          Status (local or google)
+      </div>
+
+      <div class="button-row">
+        <div class="fa fa-google" id="sign-in-out"></div>
+        <div class="fa fa-question" id="help"></div>
+      </div>
 
       <!-- <div class="iconsection" id="signinicon">
         <span class="iconwrapper displaylist" id="displocal"><span class="icon iconlocal">&#x1f5a5;</span></span>

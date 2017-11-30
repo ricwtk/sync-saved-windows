@@ -251,6 +251,29 @@
 //   el.appendChild(htmlelement);
 // }
 
+function refreshOpenedWindows() {
+  browser.tabs.query({}).then((tabs) => {
+    vueApp.openedWindows = [];
+    for (let tab of tabs) {
+      let win = vueApp.openedWindows.find(w => w.windowId == tab.windowId);
+      if (win !== undefined) {
+        win.tabs.push(tab);
+      } else {
+        vueApp.openedWindows.push({
+          windowId: tab.windowId,
+          tabs: [tab]
+        });
+      }
+    }
+    // sort tabs
+    for (let win of vueApp.openedWindows) {
+      win.tabs.sort((t1,t2) => t1.index - t2.index);
+    }
+    // sort windows
+    vueApp.openedWindows.sort((w1,w2) => w1.index - w2.index);
+  });
+}
+
 Vue.component('single-window', {
   props: ['window', 'actions', 'notLast', 'rootList', 'windowIndex', 'group'],
   created: function () {
@@ -303,28 +326,14 @@ var vueApp = new Vue({
   },
   created: function () {
     // get opened windows
-    browser.tabs.query({}).then((tabs) => {
-      for (let tab of tabs) {
-        let win = this.openedWindows.find(w => w.windowId == tab.windowId);
-        if (win !== undefined) {
-          win.tabs.push(tab);
-        } else {
-          this.openedWindows.push({
-            windowId: tab.windowId,
-            tabs: [tab]
-          });
-        }
-      }
-      // sort tabs
-      for (let win of this.openedWindows) {
-        win.tabs.sort((t1,t2) => t1.index - t2.index);
-      }
-      // sort windows
-      this.openedWindows.sort((w1,w2) => w1.index - w2.index);
-    });
+    refreshOpenedWindows();
 
     // get saved windows
     getSavedWindows();
+
+    // add listener
+    browser.tabs.onCreated.addListener(refreshOpenedWindows);
+    browser.tabs.onRemoved.addListener(refreshOpenedWindows);
   },
   methods: {
     removeSaved: function () {
