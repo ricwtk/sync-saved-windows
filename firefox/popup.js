@@ -284,6 +284,11 @@ Vue.component('single-window', {
     },
     removeWindow: function () {
       removeWindowFromStorage(this.windowIndex, this.rootList);
+    },
+    restoreWindow: function () {
+      browser.windows.create({
+        url: this.window.tabs.map((t) => t.url)
+      });
     }
   },
   template: `
@@ -293,7 +298,7 @@ Vue.component('single-window', {
       </div>
       <div v-if="actions.includes('s')" class="savewinbtn fa fa-plus" title="Save window" @click="saveWindow"></div>
       <div v-if="actions.includes('d')" class="delwinbtn fa fa-times" title="Delete window" @click="removeWindow"></div>
-      <div v-if="actions.includes('r')" class="openwinbtn fa fa-window-restore" title="Restore window"></div>
+      <div v-if="actions.includes('r')" class="openwinbtn fa fa-window-restore" title="Restore window" @click="restoreWindow"></div>
     </div>
   `
 });
