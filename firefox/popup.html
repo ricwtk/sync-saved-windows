@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">    
     <link rel="stylesheet" href="popup.css"/>
     <script src="js/vue.min.js"></script>
+    <!-- <script src="js/gapi.js"></script> -->
   </head>
 
   <body>
@@ -45,12 +46,15 @@
       <div class="vsep"></div>
 
       <div id="status">
-          Status (local or google)
+          {{ logInStatus }}
       </div>
 
       <div class="button-row">
-        <div class="fa fa-google" id="sign-in-out"></div>
-        <div class="fa fa-question" id="help"></div>
+        <div :class="{ fa: true, 'fa-google': !signedIn, 'fa-sign-out': signedIn }" 
+          id="sign-in-out" 
+          @click="signInOut"
+          :title="signedIn ? 'Click to sign out' : 'Click to log in to Google'"></div>
+        <div class="fa fa-question" id="help" title="Help"></div>
       </div>
 
       <!-- <div class="iconsection" id="signinicon">
@@ -72,9 +76,10 @@
         <div class="miwrapper"><span class="mi" id="signinbutton"></span></div>
         <div class="miwrapper"><span class="mi" id="closemenu" title="Close menu">&#x2A2F</span></div>
       </div> -->
+      <!-- <script src="https://apis.google.com/js/api.js" id="gapiscript" @load="handleClientLoad"></script> -->
     </div>
 
-    <!-- <script src="https://apis.google.com/js/api.js" id="gapiscript"></script> -->
+    
     <!-- <script async defer src="https://apis.google.com/js/api.js"
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()"> -->

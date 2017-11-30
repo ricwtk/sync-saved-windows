@@ -251,6 +251,47 @@
 //   el.appendChild(htmlelement);
 // }
 
+const REDIRECT_URL = browser.identity.getRedirectURL();
+const API_KEY = "AIzaSyA_31R6_xIgqi2fTs-48Z_UQ0L1d9X1JlA";
+const CLIENT_ID = "155155797881-435186je4g6s5f4j8f28oj1ihdmkv33g.apps.googleusercontent.com";
+var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+const SCOPES = ['https://www.googleapis.com/auth/drive.appfolder'];
+const AUTH_URL =
+`https://accounts.google.com/o/oauth2/auth
+?client_id=${CLIENT_ID}
+&response_type=token
+&redirect_uri=${encodeURIComponent(REDIRECT_URL)}
+&scope=${encodeURIComponent(SCOPES.join(' '))}`;
+var ACCESS_TOKEN = "";
+
+// function initClient() {
+//   console.log(Object.keys(gapi),gapi.auth2);
+//   gapi.client.init({
+//     apiKey: API_KEY,
+//     clientId: CLIENT_ID,
+//     discoveryDocs: DISCOVERY_DOCS,
+//     scope: SCOPES
+//   }).then(function () {
+//     console.log(gapi.auth2.getAuthInstance().isSignedIn.get());
+//     // // Listen for sign-in state changes.
+//     // gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+
+//     // // Handle the initial sign-in state.
+//     // updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+//     // authorizeButton.onclick = handleAuthClick;
+//     // signoutButton.onclick = handleSignoutClick;
+//   });
+// }
+
+function extractAccessToken(str) {
+  let params = {};
+  str.split("#")[1].split("&").forEach(i => {
+    let kv = i.split("=");
+    params[kv[0]] = kv[1];
+  });
+  return params["access_token"];
+}
+
 function refreshOpenedWindows() {
   browser.tabs.query({}).then((tabs) => {
     vueApp.openedWindows = [];
@@ -327,11 +368,38 @@ var vueApp = new Vue({
   el: "#main",
   data: {
     openedWindows: [],
-    savedWindows: []
+    savedWindows: [],
+    signedIn: false
+  },
+  computed: {
+    logInStatus: function () {
+      if (this.signedIn) {
+        return "Data saved to Google Drive"
+      } else {
+        return "Data saved locally"
+      }
+    }
   },
   created: function () {
+    // load auth2
+    // gapi.load('client:auth2', initClient);
+
     // get opened windows
     refreshOpenedWindows();
+
+    // check if logged in
+    browser.identity.launchWebAuthFlow({
+      interactive: false,
+      url: AUTH_URL
+    }).then(res => {
+      this.signedIn = true;
+      console.log("signed in to Google", res);
+      ACCESS_TOKEN = extractAccessToken(res);
+      console.log(ACCESS_TOKEN);
+    }, res => {
+      this.signedIn = false;
+      console.log("not signed in to Google", res);
+    });
 
     // get saved windows
     getSavedWindows();
@@ -340,9 +408,29 @@ var vueApp = new Vue({
     browser.tabs.onCreated.addListener(refreshOpenedWindows);
     browser.tabs.onRemoved.addListener(refreshOpenedWindows);
   },
+  watch: {
+    signedIn: function () {
+      getSavedWindows();
+    }
+  },
   methods: {
     removeSaved: function () {
       removeAllWindowsFromStorage();
+    },
+    signInOut: function () {
+      // console.log(gapi);
+      if (!this.signedIn) {
+        browser.identity.launchWebAuthFlow({
+          interactive: true,
+          url: AUTH_URL
+        }).then((res) => {
+          console.log("Logged in to Google");
+          ACCESS_TOKEN = extractAccessToken(res);
+          console.log(ACCESS_TOKEN);
+        }, (res) => {
+          console.log("Not logged in to Google");
+        });
+      }
     }
   }
 })
