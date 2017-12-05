@@ -22,30 +22,7 @@ function getSavedWindows(vueInst) {
     });
   } else {
     if (vueInst.signedIn) {
-      // google drive
-      let x = new URL("https://www.googleapis.com/drive/v3/files");
-      x.search = new URLSearchParams([
-        ["q", "name=\"savedtabs.json\""],
-        ["spaces", "appDataFolder"],
-        ["fields", "files(id,name)"]
-      ]);
-      let req = new Request(x.href, {
-        method: "GET",
-        headers: getRequestHeader()
-      });
-      fetch(req).then(resp => {
-        if (resp.status == 200) {
-          return resp.json();
-        } else {
-          throw resp.status;
-        }
-      }).then(resp => {
-        if (resp.files.length > 0) {
-          console.log(resp.files[0]);
-        } else {
-          vueInst.savedWindows = [];
-        }
-      });
+      gDriveGetFileId().then(console.log);
     }
   }
 }
@@ -89,6 +66,56 @@ function removeAllWindowsFromStorage() {
   getSavedWindows(vueApp);
 }
 
-function gDriveGetFileContent() {
+function gDriveGetFileId() {
+  // google drive
+  let x = new URL("https://www.googleapis.com/drive/v3/files");
+  x.search = new URLSearchParams([
+    ["q", "name=\"savedtabs.json\""],
+    ["spaces", "appDataFolder"],
+    ["fields", "files(id,name)"]
+  ]);
+  let req = new Request(x.href, {
+    method: "GET",
+    headers: getRequestHeader()
+  });
 
+  return fetch(req).then(resp => {
+    if (resp.status == 200) {
+      return resp.json();
+    } else {
+      throw resp.status;
+    }
+  }).then(resp => {
+    if (resp.files.length > 0) {
+      return resp.files[0];
+    } else {
+      return gDriveCreateFile();
+    }
+  });
+}
+
+function gDriveCreateFile() {
+  let reqHeader = getRequestHeader();
+  reqHeader.append("Content-Type", "application/json");
+  let reqBody = {
+    name: 'savedtabs.json',
+    parents: ['appDataFolder']
+  };
+  let x = new URL("https://www.googleapis.com/drive/v3/files");
+  x.search = new URLSearchParams([
+    ["alt", "json"],
+    ["fields", "files(id,name)"]
+  ]);
+  let req = new Request(x.href, {
+    method: "POST",
+    headers: reqHeader,
+    body: JSON.stringify(reqBody),
+  });
+  return fetch(req).then((response) => {
+    if (response.status == 200) {
+      return response.json();
+    } else {
+      throw response.status;
+    }
+  });
 }
