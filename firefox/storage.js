@@ -104,7 +104,7 @@ function gDriveCreateFile() {
   let x = new URL("https://www.googleapis.com/drive/v3/files");
   x.search = new URLSearchParams([
     ["alt", "json"],
-    ["fields", "files(id,name)"]
+    ["fields", "id,name"]
   ]);
   let req = new Request(x.href, {
     method: "POST",
@@ -114,6 +114,24 @@ function gDriveCreateFile() {
   return fetch(req).then((response) => {
     if (response.status == 200) {
       return response.json();
+    } else {
+      throw response.status;
+    }
+  });
+}
+
+function gDriveGetContent(file) {
+  let x = new URL("https://www.googleapis.com/drive/v3/files/" + file.id);
+  x.search = new URLSearchParams([
+    ["alt", "media"]
+  ]);
+  var req = new Request(x.href, {
+    method: "GET",
+    headers: getRequestHeader()
+  });
+  return fetch(req).then((response) => {
+    if (response.status == 200) {
+      return response.text();
     } else {
       throw response.status;
     }
