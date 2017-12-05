@@ -22,7 +22,7 @@ function getSavedWindows(vueInst) {
     });
   } else {
     if (vueInst.signedIn) {
-      gDriveGetFileId().then(console.log);
+      gDriveGetFileId().then(gDriveGetContent).then(console.log);
     }
   }
 }
@@ -131,7 +131,11 @@ function gDriveGetContent(file) {
   });
   return fetch(req).then((response) => {
     if (response.status == 200) {
-      return response.text();
+      try {
+        return JSON.parse(response.text());
+      } catch (e) {
+        return [];
+      }
     } else {
       throw response.status;
     }
