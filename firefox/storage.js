@@ -21,8 +21,12 @@ function getSavedWindows(vueInst) {
       }
     });
   } else {
+    // gdrive
     if (vueInst.signedIn) {
-      gDriveGetFileId().then(gDriveGetContent).then(console.log);
+      gDriveGetFileId().then(gDriveGetContent).then(resp => {
+        vueInst.savedWindows = resp;
+        return resp;
+      }).then(console.log);
     }
   }
 }
@@ -55,6 +59,10 @@ function saveToStorage(toSave) {
     browser.storage.local.set({
       "sswin": toSave
     });
+  } else {
+    // gdrive
+    if (vueApp.signedIn) 
+      gDriveGetFileId().then(file => gDriveSetContent(file, toSave)).then(console.log);
   }
 }
 
@@ -62,6 +70,10 @@ function removeAllWindowsFromStorage() {
   if (vueApp.userLocal) {
     // local
     browser.storage.local.remove("sswin").then();
+  } else {
+    // gdrive
+    if (vueApp.signedIn) 
+      gDriveGetFileId().then(file => gDriveSetContent(file, [])).then(console.log);
   }
   getSavedWindows(vueApp);
 }
@@ -125,19 +137,40 @@ function gDriveGetContent(file) {
   x.search = new URLSearchParams([
     ["alt", "media"]
   ]);
-  var req = new Request(x.href, {
+  let req = new Request(x.href, {
     method: "GET",
     headers: getRequestHeader()
   });
   return fetch(req).then((response) => {
     if (response.status == 200) {
-      try {
-        return JSON.parse(response.text());
-      } catch (e) {
-        return [];
-      }
+      return response.text().then(res => {
+        try {
+          return JSON.parse(res);
+        } catch (e) {
+          return [];
+        }
+      });
     } else {
       throw response.status;
     }
   });
 }
+
+function gDriveSetContent(file, content) {
+  let x = new URL("https://www.googleapis.com/upload/drive/v3/files/" + file.id);
+  x.search = new URLSearchParams([
+    ["uploadType", "media"]
+  ]);
+  let req = new Request(x.href, {
+    method: "PATCH",
+    headers: getRequestHeader(),
+    body: JSON.stringify(content)
+  });
+  return fetch(req).then((resp) => {
+    if (resp.status == 200) {
+      return resp.json();
+    } else {
+      throw resp.status;
+    }
+  })
+} 
