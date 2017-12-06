@@ -317,20 +317,46 @@ function refreshOpenedWindows() {
 function afterGoogleLogin(authResult) {
   setStorageLocation(false);
   ACCESS_TOKEN = extractAccessToken(authResult);
-  const reqHeader = new Headers();
-  reqHeader.append('Authorization', 'Bearer ' + ACCESS_TOKEN);
-  fetch(new Request("https://www.googleapis.com/oauth2/v1/userinfo?alt=json", {
-    method: "GET",
-    headers: reqHeader
-  })).then(response => {
-    if (response.status == 200) {
-      return response.json()
-    } else {
-      throw response.status;
-    }
-  }).then(profile => {
-    vueApp.remoteAccount = profile.email;
-  });
+  if (!ACCESS_TOKEN) {
+    throw "Authorization failure";
+  } else {
+    let valURL = new URL("https://www.googleapis.com/oauth2/v3/tokeninfo");
+    valURL.search = new URLSearchParams([
+      ["access_token", ACCESS_TOKEN]
+    ]);
+    let validationRequest = new Request(valURL.href, {
+      method: "GET"
+    });
+    return fetch(validationRequest).then(resp => {
+      if (resp.status == 200) {
+        resp.json().then(json => {
+          if (json.aud && (json.aud === CLIENT_ID)) {
+            let x = new URL("https://www.googleapis.com/oauth2/v1/userinfo");
+            x.search = new URLSearchParams([
+              ["alt", "json"]
+            ]);
+            let req = new Request(x.href, {
+              method: "GET",
+              headers: getRequestHeader()
+            });
+            return fetch(req).then(r => {
+              if (r.status == 200) {
+                return r.json();
+              } else {
+                throw r.status;
+              }
+            }).then(profile => {
+              vueApp.remoteAccount = profile.email;
+            });
+          } else {
+            throw resp.status;
+          }
+        });
+      } else {
+        throw resp.status;
+      }
+    });
+  }
 }
 
 
