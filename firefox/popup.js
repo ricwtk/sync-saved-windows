@@ -227,6 +227,9 @@ var vueApp = new Vue({
         this.useLocal = true;
         setStorageLocation(true);
       }
+    },
+    openHelp: function () {
+      window.open("doc/help.html");
     }
   }
 })

@@ -54,7 +54,7 @@
           id="sign-in-out" 
           @click="signInOut"
           :title="signedIn ? 'Click to sign out' : 'Click to log in to Google'"></div>
-        <div class="fa fa-question" id="help" title="Help"></div>
+        <div class="fa fa-question" id="help" title="Help" @click="openHelp"></div>
       </div>
 
       <!-- <div class="iconsection" id="signinicon">
