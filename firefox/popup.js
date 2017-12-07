@@ -148,7 +148,9 @@ var vueApp = new Vue({
     savedWindows: [],
     signedIn: false,
     useLocal: true,
-    remoteAccount: ""
+    remoteAccount: "",
+    notiMsg: "",
+    showNotify: false
   },
   computed: {
     logInStatus: function () {
@@ -230,6 +232,14 @@ var vueApp = new Vue({
     },
     openHelp: function () {
       window.open("doc/help.html");
+    },
+    setNotification: function (msg) {
+      this.notiMsg = msg;
+      this.showNotify = true;
+      setTimeout(() => {
+        this.notiMsg = "";
+        this.showNotify = false;
+      }, 1000);
     }
   }
 })

@@ -23,10 +23,17 @@ function getSavedWindows(vueInst) {
   } else {
     // gdrive
     if (vueInst.signedIn) {
-      gDriveGetFileId().then(gDriveGetContent).then(resp => {
-        vueInst.savedWindows = resp;
-        return resp;
-      }).then(console.log);
+      gDriveGetFileId()
+        .then(gDriveGetContent)
+        .then(resp => {
+          vueInst.savedWindows = resp;
+          return resp;
+        })
+        .then(r => {
+          vueInst.setNotification("Data retrieved");
+          return r;
+        })
+        .then(console.log);
     }
   }
 }
@@ -62,7 +69,13 @@ function saveToStorage(toSave) {
   } else {
     // gdrive
     if (vueApp.signedIn) 
-      gDriveGetFileId().then(file => gDriveSetContent(file, toSave)).then(console.log);
+      gDriveGetFileId()
+        .then(file => gDriveSetContent(file, toSave))
+        .then(r => {
+          vueApp.setNotification("Data updated");
+          return r;
+        })
+        .then(console.log);
   }
 }
 
@@ -73,7 +86,13 @@ function removeAllWindowsFromStorage() {
   } else {
     // gdrive
     if (vueApp.signedIn) 
-      gDriveGetFileId().then(file => gDriveSetContent(file, [])).then(console.log);
+      gDriveGetFileId()
+        .then(file => gDriveSetContent(file, []))
+        .then(r => {
+          vueApp.setNotification("Data updated");
+          return r;
+        })
+        .then(console.log);
   }
   getSavedWindows(vueApp);
 }

@@ -57,6 +57,12 @@
         <div class="fa fa-question" id="help" title="Help" @click="openHelp"></div>
       </div>
 
+      <transition name="fade">
+        <div id="noti" v-if="showNotify">
+          {{ notiMsg }}
+        </div>
+      </transition>
+
       <!-- <div class="iconsection" id="signinicon">
         <span class="iconwrapper displaylist" id="displocal"><span class="icon iconlocal">&#x1f5a5;</span></span>
         <span class="iconwrapper displaylist" id="dispgdrive"><img class="icon icongdrive" src="./icons/google_signedin.png"></span>
@@ -79,16 +85,6 @@
       <!-- <script src="https://apis.google.com/js/api.js" id="gapiscript" @load="handleClientLoad"></script> -->
     </div>
 
-    
-    <!-- <script async defer src="https://apis.google.com/js/api.js"
-      onload="this.onload=function(){};handleClientLoad()"
-      onreadystatechange="if (this.readyState === 'complete') this.onload()"> -->
-    <!-- <script src="general.js"></script>
-    <script src="local.js"></script>
-    <script src="dbox.js"></script>
-    <script src="gdrive.js"></script>
-    <script src="odrive.js"></script>
-    <script src="storagefunction.js"></script> -->
     <script src="storage.js"></script>
     <script src="popup.js"></script>
   </body>
