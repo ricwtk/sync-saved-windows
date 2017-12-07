@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "Sync Saved Windows",
+  "version": "2",
+  "description": "Synchronise saved windows",
+  "icons":
+  {
+    "48": "icons/icon.png",
+    "96": "icons/icon.png"
+  },
+
+  "permissions": [
+    "tabs",
+    "storage",
+    "identity",
+    "*://www.googleapis.com/*",
+    "*://accounts.google.com/*"
+  ],
+
+  "content_security_policy": "script-src 'self' https://apis.google.com/ 'unsafe-eval'; object-src 'self';",
+
+  "browser_action":
+  {
+    "browser_style": true,
+    "default_icon": "icons/icon.png",
+    "default_title": "Sync Saved Windows",
+    "default_popup": "popup.html"
+  }
+
+}

@@ -1,0 +1,130 @@
+* {
+  color: #555555;
+  /*font-size: 12px;*/
+  margin: 0;
+  padding: 0;
+}
+
+#main {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+}
+
+.section {
+  padding: 10px 40px;
+  text-align: center;
+}
+
+#remove-all-saved {
+  background-color: #F44336;
+  border: 3px solid #f44336;
+  color: white;
+  cursor: pointer;
+  text-align: center;
+}
+
+#remove-all-saved:hover {
+  background-color: #e57373;
+}
+
+.favicon {
+  height: 15px;
+  margin: 1px;
+  color: #673AB7;
+}
+
+.window {
+  display: flex;
+  background-color: #ddd;
+}
+
+.tabswrapper {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+
+.savewinbtn, .delwinbtn, .openwinbtn {
+  padding: 7px;
+  color: white;
+  border: 3px solid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.savewinbtn { background-color: #4caf50; border-color: #4caf50; }
+.delwinbtn { background-color: #f44336; border-color: #f44336; }
+.openwinbtn { background-color: #673ab7; border-color: #673ab7; }
+
+.savewinbtn:hover { background-color: #81C784; }
+.delwinbtn:hover { background-color: #E57373; }
+.openwinbtn:hover { background-color: #9575CD; }
+
+.addsep {
+  border-bottom: 2px solid #ccc;
+}
+
+.vsep {
+  height: 5px;
+}
+
+#status {
+  background-color: #607D8B;
+  color: white;
+  padding: 2px;
+  text-align: center;
+}
+
+.button-row {
+  display: flex;
+}
+
+.button-row > * {
+  flex-grow: 1;
+  text-align: center;
+  border: 3px solid #607d8b;
+  padding: 5px;
+  cursor: pointer;
+  color: white;
+  background-color: #607d8b;
+}
+
+#sign-in-out:hover {
+  background-color: #d34836;
+  border-color: #d34836;
+}
+
+#help:hover {
+  background-color: #795548;
+  border-color: #795548;
+}
+
+#noti {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #FFC107dd;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.fade-enter-active {
+  transition: opacity 0s
+}
+
+.fade-leave-active {
+  transition: opacity 1s
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
+}

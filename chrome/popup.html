@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">    
+    <link rel="stylesheet" href="popup.css"/>
+    <script src="js/vue.min.js"></script>
+    <!-- <script src="js/gapi.js"></script> -->
+  </head>
+
+  <body>
+    <div id="main">
+      <div class="section">Saved windows</div>
+      <template v-if="savedWindows.length == 0">
+        <div class="window">
+          <div class="tabswrapper">
+            Saved windows will be displayed here
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <single-window v-for="(window, index) in savedWindows" 
+          :root-list="savedWindows"
+          :window-index="index"
+          :window="window" 
+          actions="dr"
+          :not-last="index != (savedWindows.length-1)"
+          group="saved">
+        </single-window>
+        <div id="remove-all-saved" @click="removeSaved">
+          Remove all saved windows
+        </div>
+      </template>
+      
+      <div class="section">Opened windows</div>
+      <single-window v-for="(window, index) in openedWindows" 
+        :root-list="openedWindows"
+        :window-index="index"
+        :window="window" 
+        actions="s"
+        :not-last="index != (openedWindows.length-1)"
+        group="opened">
+      </single-window>
+
+      <div class="vsep"></div>
+
+      <div id="status">
+          {{ logInStatus }}
+      </div>
+
+      <div class="button-row">
+        <div :class="{ fa: true, 'fa-google': !signedIn, 'fa-sign-out': signedIn }" 
+          id="sign-in-out" 
+          @click="signInOut"
+          :title="signedIn ? 'Click to sign out' : 'Click to log in to Google'"></div>
+        <div class="fa fa-question" id="help" title="Help" @click="openHelp"></div>
+      </div>
+
+      <transition name="fade">
+        <div id="noti" v-if="showNotify">
+          {{ notiMsg }}
+        </div>
+      </transition>
+
+      <!-- <div class="iconsection" id="signinicon">
+        <span class="iconwrapper displaylist" id="displocal"><span class="icon iconlocal">&#x1f5a5;</span></span>
+        <span class="iconwrapper displaylist" id="dispgdrive"><img class="icon icongdrive" src="./icons/google_signedin.png"></span>
+        <span class="iconwrapper displaylist" id="dispodrive"><img class="icon iconodrive" src="./icons/onedrive_signedin.png"></span>
+        <span class="iconwrapper displaylist" id="dispdbox"><img class="icon icondbox" src="./icons/dropbox_signedin.png"></span>
+        <span class="iconwrapper" id="preference" title="Preferences"><span class="icon iconpref">&#x2699;</span></span>
+      </div>
+
+      <div class="slideout hide" id="menu">
+        <div class="miwrapper"><span class="mi" id="storageselect">
+          Save windows on:<br>
+          <span class="iconwrapper storelist storeselected" id="storelocal"><span class="icon iconlocal">&#x1f5a5;</span></span>
+          <span class="iconwrapper storelist" id="storegdrive"><img class="icon icongdrive" id="storegdriveicon" src="./icons/google_signedin.png"></span>
+          <span class="iconwrapper storelist" id="storeodrive"><img class="icon iconodrive" id="storeodriveicon" src="./icons/onedrive_signedin.png"></span>
+          <span class="iconwrapper storelist" id="storedbox"><img class="icon icondbox" id="storedboxicon" src="./icons/dropbox_signedin.png"></span>
+        </span></div>
+        <div class="miwrapper"><span class="mi" id="signinbutton"></span></div>
+        <div class="miwrapper"><span class="mi" id="closemenu" title="Close menu">&#x2A2F</span></div>
+      </div> -->
+      <!-- <script src="https://apis.google.com/js/api.js" id="gapiscript" @load="handleClientLoad"></script> -->
+    </div>
+
+    <script src="storage.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
