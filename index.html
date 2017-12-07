@@ -4,32 +4,102 @@
     <meta charset="utf-8">
     <title>Sync Saved Windows</title>
     <link rel="icon" href="share/icons/icon.png?v=1.0"> 
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet"> 
+    <script src="share/js/vue.min.js"></script>
     <style>
       html {
         width: 100%;
-        max-width: 800px;
-        margin: auto;
+        height: 100%;
+        font-family: "Roboto Slab", "serif";
+      }
+      body {
+        width: 100%;
+        min-height: 100%;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
       #wrapper {
+        padding: 30px;
+        width: 80%;
+        max-width: 800px;
         display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+        border-radius: 30px;
+        border: 5px dashed #3F51B5;
+        /* box-shadow: 10px 10px 10 10 #009688; */
+      }
+      .row {
+        display: flex;
+        align-items: center;
       }
       #icon {
-        width: 50px;
-        object-fit: contains;
+        object-fit: contain;
+        width: 100px;
+        margin: 10px;
+      }
+      #description {
+        flex-grow: 1;
+      }
+      #title {
+        font-size: 200%;
+      }
+      #desc {
+        color: #555;
+      }
+      #links {
+        display: flex;
+      }
+      #links > * {
+        background-color: #3F51B5;
+        color: #E8EAF6;
+        margin: 5px;
+        padding: .5em;
+        border-radius: .5em;
+        border: 2px solid #3F51B5;
+        cursor: pointer;
+      }
+      #links > *:hover {
+        background-color: #E8EAF6;
+        color: #3F51B5;
       }
     </style>
   </head>
   <body>
     <div id="wrapper">
-      <img id="icon" src="share/icons/icon.png">
-      <div id="description">
-        <div id="title">Sync Saved Windows</div>
-        <div id="links">
-          <div>Firefox add-on</div>
-          <div>Chrome plug-in</div>
-          <div>Web</div>
+      <div class="row">
+        <img id="icon" src="share/icons/icon.png">
+        <div id="description">
+          <div id="title">Sync Saved Windows</div>
+          <div id="desc">
+            This extension saves windows with multiple tabs. The saved windows can be synchronised with Google account. You can also access and edit the saved windows using the web app.
+
+            With this extension, you no longer have to keep tab open and you can organise your tabs in different windows.
+          </div>
         </div>
       </div>
+      <div id="links">
+        <div @click="openFirefox">Firefox extension</div>
+        <div @click="openChrome">Chrome extension</div>
+        <div @click="openWeb">Web</div>
+      </div>
     </div>
+
+    <script>
+      new Vue({
+        el: "#wrapper",
+        methods: {
+          openFirefox: () => window.open("https://addons.mozilla.org/en-GB/firefox/addon/sync-saved-windows/"),
+          openChrome: () => window.open("https://chrome.google.com/webstore/detail/sync-saved-windows/nfjkecjcakdlmcchjhelfiefamhnfhfa"),
+          openWeb: () => window.open("./")
+        }
+      })
+    </script>
   </body>
 </html>
