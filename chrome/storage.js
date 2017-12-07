@@ -13,7 +13,7 @@ function setStorageLocation(local) {
 function getSavedWindows(vueInst) {
   if (vueInst.useLocal) {
     // local
-    chrome.storage.local.get("sswin").then(res => {
+    chrome.storage.local.get("sswin", res => {
       if (res['sswin'] != undefined) {
         vueInst.savedWindows = res['sswin'];
       } else {
@@ -82,7 +82,7 @@ function saveToStorage(toSave) {
 function removeAllWindowsFromStorage() {
   if (vueApp.userLocal) {
     // local
-    chrome.storage.local.remove("sswin").then();
+    chrome.storage.local.remove("sswin");
   } else {
     // gdrive
     if (vueApp.signedIn) 

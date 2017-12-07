@@ -1,14 +1,3 @@
-const REDIRECT_URL = chrome.identity.getRedirectURL();
-const API_KEY = "AIzaSyA_31R6_xIgqi2fTs-48Z_UQ0L1d9X1JlA";
-const CLIENT_ID = "155155797881-435186je4g6s5f4j8f28oj1ihdmkv33g.apps.googleusercontent.com";
-var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-const SCOPES = ['https://www.googleapis.com/auth/drive.appfolder', 'email'];
-const AUTH_URL =
-`https://accounts.google.com/o/oauth2/auth
-?client_id=${CLIENT_ID}
-&response_type=token
-&redirect_uri=${encodeURIComponent(REDIRECT_URL)}
-&scope=${encodeURIComponent(SCOPES.join(' '))}`;
 var ACCESS_TOKEN = "";
 
 function extractAccessToken(str) {
@@ -42,45 +31,27 @@ function refreshOpenedWindows() {
 
 function afterGoogleLogin(authResult) {
   setStorageLocation(false);
-  ACCESS_TOKEN = extractAccessToken(authResult);
+  // ACCESS_TOKEN = extractAccessToken(authResult);
+  ACCESS_TOKEN = authResult;
   if (!ACCESS_TOKEN) {
     throw "Authorization failure";
   } else {
-    let valURL = new URL("https://www.googleapis.com/oauth2/v3/tokeninfo");
-    valURL.search = new URLSearchParams([
-      ["access_token", ACCESS_TOKEN]
+    let x = new URL("https://www.googleapis.com/oauth2/v1/userinfo");
+    x.search = new URLSearchParams([
+      ["alt", "json"]
     ]);
-    let validationRequest = new Request(valURL.href, {
-      method: "GET"
+    let req = new Request(x.href, {
+      method: "GET",
+      headers: getRequestHeader()
     });
-    return fetch(validationRequest).then(resp => {
-      if (resp.status == 200) {
-        resp.json().then(json => {
-          if (json.aud && (json.aud === CLIENT_ID)) {
-            let x = new URL("https://www.googleapis.com/oauth2/v1/userinfo");
-            x.search = new URLSearchParams([
-              ["alt", "json"]
-            ]);
-            let req = new Request(x.href, {
-              method: "GET",
-              headers: getRequestHeader()
-            });
-            return fetch(req).then(r => {
-              if (r.status == 200) {
-                return r.json();
-              } else {
-                throw r.status;
-              }
-            }).then(profile => {
-              vueApp.remoteAccount = profile.email;
-            });
-          } else {
-            throw resp.status;
-          }
-        });
+    return fetch(req).then(r => {
+      if (r.status == 200) {
+        return r.json();
       } else {
-        throw resp.status;
+        throw r.status;
       }
+    }).then(profile => {
+      vueApp.remoteAccount = profile.email;
     });
   }
 }
@@ -172,16 +143,17 @@ var vueApp = new Vue({
       } else {
         this.useLocal = false;
         // check if logged in 
-        chrome.identity.launchWebAuthFlow({
-          interactive: false,
-          url: AUTH_URL
-        }, res => {
-          this.signedIn = true;
-          console.log("signed in to Google", res);
-          afterGoogleLogin(res);
-        }, res => {
-          this.signedIn = false;
-          console.log("not signed in to Google", res);
+        chrome.identity.getAuthToken({
+          interactive: false
+        }, token => {
+          if (token == undefined) {
+            this.signedIn = false;
+            console.log("not signed in to Google");
+          } else {
+            this.signedIn = true;
+            console.log("signed in to Google");
+            afterGoogleLogin(token);
+          }
         });
       }
     });
@@ -211,18 +183,19 @@ var vueApp = new Vue({
     signInOut: function () {
       // console.log(gapi.auth2);
       if (!this.signedIn) {
-        chrome.identity.launchWebAuthFlow({
-          interactive: true,
-          url: AUTH_URL
-        }).then((res) => {
-          console.log("Logged in to Google");
-          afterGoogleLogin(res);
-          this.useLocal = false;
-          this.signedIn = true;
-        }, (res) => {
-          console.log("Not logged in to Google");
-          this.signedIn = false;
-          this.useLocal = true;
+        chrome.identity.getAuthToken({
+          interactive: true
+        }, token => {
+          if (token == undefined) {
+            console.log("Not logged in to Google");
+            this.signedIn = false;
+            this.useLocal = true;
+          } else {
+            console.log("Logged in to Google");
+            afterGoogleLogin(token);
+            this.useLocal = false;
+            this.signedIn = true;
+          }
         });
       } else {
         this.signedIn = false;
