@@ -3,8 +3,38 @@
   <head>
     <meta charset="utf-8">
     <title>Help for Sync Saved Windows</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab|Roboto+Mono" rel="stylesheet">
+    <style>
+      * {
+        font-family: "Roboto Slab", serif;
+      }
+      html {
+        width: 100%;
+        max-width: 800px;
+        margin: auto;
+      }
+      code {
+        font-family: "Roboto Mono", monospace;
+      }
+      #title {
+        font-size: 200%;
+        border-bottom: 1px dashed;
+      }
+      section {
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      a {
+        text-decoration: underline dotted;
+        color: inherit;
+      }
+      a:hover{
+        color: #009688;
+      }
+    </style>
   </head>
   <body>
+    <div id="title">Help for Sync Saved Windows</div>
     <section>
       <h1>Supported websites</h1>
 
@@ -16,6 +46,12 @@
         <li>data: URLs</li>
         <li>file: URLs</li>
       </ul>
+    </section>
+
+    <section>
+      <h1>Google drive</h1>
+
+      When using Google drive, please wait until the notification before closing the add-on window. This is due to the fact that it takes a bit longer to update to the Google drive storage than local storage.
     </section>
   </body>
 </html>
