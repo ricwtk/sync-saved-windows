@@ -38,6 +38,7 @@ body {
   color: #3f51b5;
   position: sticky;
   top: 0px;
+  margin-bottom: 15px;
 }
 
 #header > #icon {
@@ -58,8 +59,8 @@ body {
   width: 80%;
   display: flex;
   flex-direction: row;
+  margin-bottom: 8px;
 }
-
 .buttonContentWrapper {
   width: 100%;
   display: flex;
