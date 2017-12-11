@@ -39,6 +39,7 @@ body {
   position: sticky;
   top: 0px;
   margin-bottom: 15px;
+  z-index: 99;
 }
 
 #header > #icon {
