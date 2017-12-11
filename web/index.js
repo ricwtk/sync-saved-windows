@@ -25,6 +25,7 @@ function accountStatusListener(signedIn) {
     });
   } else {
     v_app.signedIn = false;
+    v_app.savedWindows = [];
   }
 }
 function signInAccount() {
