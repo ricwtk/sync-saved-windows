@@ -45,7 +45,9 @@
         </span>
       </div>
     </div>
-    <single-window v-for="w in savedWindows"></single-window>
+    <single-window v-for="w in savedWindows" 
+      :window="w">
+    </single-window>
     </div>
   </div>
   <script src="https://apis.google.com/js/api:platform.js?onload=checkSignInStatus" async defer></script>

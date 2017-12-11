@@ -58,10 +58,11 @@ function getFileContent(fileId) {
 } 
 
 Vue.component("single-window", {
+  props: ["window"],
   template: `
     <div class="single-window">
       <div class="tabs-wrapper">
-        <single-tab></single-tab>
+        <single-tab v-for="tab in window.tabs" :tab="tab"></single-tab>
       </div>
       <div class="actions-group">
         <div class="action fa fa-times"></div>
@@ -72,8 +73,10 @@ Vue.component("single-window", {
 })
 
 Vue.component("single-tab", {
+  props: ["tab"],
   template: `
-    <i class="fa fa-question-circle"></i>
+    <img v-if="tab.favIconUrl" :src="tab.favIconUrl" class="favicon" :title="tab.title">
+    <i v-else class="fa fa-question-circle favicon"></i>
   `
 })
 
