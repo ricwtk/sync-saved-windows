@@ -87,7 +87,7 @@ Vue.component("single-window", {
         </div>
         <div class="actions-group">
           <div class="action fa fa-times"></div>
-          <div class="action fa fa-pencil"></div>
+          <div class="action fa fa-window-restore"></div>
         </div>
       </div>
       <div :class="tabListClass">
@@ -112,6 +112,7 @@ Vue.component("single-tab-detail", {
       <img v-if="tab.favIconUrl" :src="tab.favIconUrl" class="favicon">
       <i v-else class="fa fa-question-circle favicon"></i>
       <div class="single-tab-url">{{ tab.url }}</div>
+      <div class="fa fa-external-link"></div>
     </div>
   `
 });
