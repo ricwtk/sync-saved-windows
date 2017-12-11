@@ -18,8 +18,11 @@ function checkSignInStatus() {
 function accountStatusListener(signedIn) {
   if (signedIn) {
     v_app.signedIn = true;
-    console.log(gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getEmail());
     v_app.email = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getEmail();
+    getFileId().then(getFileContent).then(res => {
+      v_app.savedWindows = res;
+      console.log(res);
+    });
   } else {
     v_app.signedIn = false;
   }
@@ -31,6 +34,48 @@ function signOutAccount() {
   gapi.auth2.getAuthInstance().signOut();
 }
 
+function getFileId() {
+  return gapi.client.drive.files.list({
+    q: "name=\"savedtabs.json\"",
+    spaces: "appDataFolder",
+    fields: "files(id)"
+  }).then(resp => {
+    let files = resp.result.files;
+    if (files.length < 1) {
+      // create file
+    } else {
+      return files[0].id;
+    }
+  })
+}
+function getFileContent(fileId) {
+  return gapi.client.drive.files.get({
+    fileId: fileId,
+    alt: "media"
+  }).then(resp => {
+    return resp.result;
+  });
+} 
+
+Vue.component("single-window", {
+  template: `
+    <div class="single-window">
+      <div class="tabs-wrapper">
+        <single-tab></single-tab>
+      </div>
+      <div class="actions-group">
+        <div class="action">some action</div>
+      </div>
+    </div>
+  `
+})
+
+Vue.component("single-tab", {
+  template: `
+    <i class="fa fa-question-circle"></i>
+  `
+})
+
 v_app = new Vue({
   el: "#wrapper",
   data: {
@@ -41,7 +86,6 @@ v_app = new Vue({
   methods: {
     openSyncSavedWindowsHome: () => window.open("../", "_self"),
     clickOnAccount: function () {
-      console.log("clickOnAccount", this.signedIn);
       if (this.signedIn) signOutAccount();
       else signInAccount();
     }

@@ -13,6 +13,7 @@
   <link rel="icon" href="../share/icons/icon.png?v=1.0">
   <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
   <script src="../share/js/vue.min.js"></script>
+  <link rel="stylesheet" href="../share/font-awesome-4.7.0/css/font-awesome.min.css">    
   <link href="index.css" rel="stylesheet">
 </head>
 
@@ -44,21 +45,7 @@
         </span>
       </div>
     </div>
-    <div v-for="i in 100">{{ i }} text</div>
-    <!-- <div class="row">
-      <img id="icon" src="../share/icons/icon.png">
-      <div id="description">
-        <div id="title">Sync Saved Windows</div>
-        <div id="desc">
-          This extension saves windows with multiple tabs. The saved windows can be synchronised with Google account. You can also access and edit the saved windows using the web app. With this extension, you no longer have to keep tab open and you can organise your tabs in different windows.
-        </div>
-      </div>
-    </div>
-    <div id="links">
-      <div @click="openFirefox">Firefox extension</div>
-      <div @click="openChrome">Chrome extension</div>
-      <div @click="openWeb">Web</div>
-    </div> -->
+    <single-window v-for="w in savedWindows"></single-window>
     </div>
   </div>
   <script src="https://apis.google.com/js/api:platform.js?onload=checkSignInStatus" async defer></script>
