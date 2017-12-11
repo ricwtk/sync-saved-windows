@@ -123,9 +123,7 @@ body {
   color: white;
   cursor: pointer;
 }
-.action.fa-times {
-  background-color: #F44336;
-}
-.action.fa-pencil {
-  background-color: #3f51b5;
-}
+.action.fa-times { background-color: #F44336; }
+.action.fa-times:hover { background-color: #E57373; }
+.action.fa-pencil { background-color: #3f51b5; }
+.action.fa-pencil:hover { background-color: #7986CB; }
