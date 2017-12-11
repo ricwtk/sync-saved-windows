@@ -60,18 +60,42 @@ function getFileContent(fileId) {
 
 Vue.component("single-window", {
   props: ["window"],
+  data: function () {
+    return {
+      showTabList: false
+    }
+  },
+  computed: {
+    tabListClass: function () {
+      return {
+        "tab-list": true,
+        "hide-tab-list": !this.showTabList,
+        "show-tab-list": this.showTabList
+      }
+    }
+  },
+  methods: {
+    toggleTabList: function () {
+      this.showTabList = !this.showTabList;
+    }
+  },
   template: `
     <div class="single-window">
-      <div class="tabs-wrapper">
-        <single-tab v-for="tab in window.tabs" :tab="tab"></single-tab>
+      <div class="overview">
+        <div class="tabs-wrapper" @click="toggleTabList">
+          <single-tab v-for="tab in window.tabs" :tab="tab"></single-tab>
+        </div>
+        <div class="actions-group">
+          <div class="action fa fa-times"></div>
+          <div class="action fa fa-pencil"></div>
+        </div>
       </div>
-      <div class="actions-group">
-        <div class="action fa fa-times"></div>
-        <div class="action fa fa-pencil"></div>
+      <div :class="tabListClass">
+        <single-tab-detail v-for="tab in window.tabs" :tab="tab"></single-tab-detail>
       </div>
     </div>
   `
-})
+});
 
 Vue.component("single-tab", {
   props: ["tab"],
@@ -79,7 +103,18 @@ Vue.component("single-tab", {
     <img v-if="tab.favIconUrl" :src="tab.favIconUrl" class="favicon" :title="tab.title">
     <i v-else class="fa fa-question-circle favicon"></i>
   `
-})
+});
+
+Vue.component("single-tab-detail", {
+  props: ["tab"],
+  template: `
+    <div class="single-tab-detail">
+      <img v-if="tab.favIconUrl" :src="tab.favIconUrl" class="favicon">
+      <i v-else class="fa fa-question-circle favicon"></i>
+      <div class="single-tab-url">{{ tab.url }}</div>
+    </div>
+  `
+});
 
 v_app = new Vue({
   el: "#wrapper",
