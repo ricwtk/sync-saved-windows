@@ -64,7 +64,8 @@ Vue.component("single-window", {
         <single-tab></single-tab>
       </div>
       <div class="actions-group">
-        <div class="action">some action</div>
+        <div class="action fa fa-times"></div>
+        <div class="action fa fa-pencil"></div>
       </div>
     </div>
   `

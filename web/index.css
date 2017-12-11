@@ -111,3 +111,21 @@ body {
   align-items: center;
   min-width: 250px;
 }
+.actions-group {
+  display: flex;
+  align-items: stretch;
+}
+.action {
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+}
+.action.fa-times {
+  background-color: #F44336;
+}
+.action.fa-pencil {
+  background-color: #3f51b5;
+}
