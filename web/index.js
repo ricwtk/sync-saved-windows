@@ -102,13 +102,18 @@ Vue.component("single-tab-detail", {
   props: ["tab"],
   template: `
     <div class="single-tab-detail">
-      <img v-if="tab.favIconUrl" :src="tab.favIconUrl" class="favicon">
-      <i v-else class="fa fa-question-circle favicon"></i>
-      <div class="detail">
-        <div class="single-tab-title">{{ tab.title }}</div>
-        <div class="single-tab-url">{{ tab.url }}</div>
+      <div class="description">
+        <img v-if="tab.favIconUrl" :src="tab.favIconUrl" class="favicon">
+        <i v-else class="fa fa-question-circle favicon"></i>
+        <div class="detail">
+          <div class="single-tab-title">{{ tab.title }}</div>
+          <div class="single-tab-url">{{ tab.url }}</div>
+        </div>
       </div>
-      <div class="fa fa-external-link"></div>
+      <div class="actions-group">
+        <div class="action fa fa-minus"></div>
+        <div class="action fa fa-external-link"></div>        
+      </div>
     </div>
   `
 });
