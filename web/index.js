@@ -65,15 +65,6 @@ Vue.component("single-window", {
       showTabList: false
     }
   },
-  computed: {
-    tabListClass: function () {
-      return {
-        "tab-list": true,
-        "hide-tab-list": !this.showTabList,
-        "show-tab-list": this.showTabList
-      }
-    }
-  },
   methods: {
     toggleTabList: function () {
       this.showTabList = !this.showTabList;
@@ -90,9 +81,11 @@ Vue.component("single-window", {
           <div class="action fa fa-window-restore"></div>
         </div>
       </div>
-      <div :class="tabListClass">
-        <single-tab-detail v-for="tab in window.tabs" :tab="tab"></single-tab-detail>
-      </div>
+      <transition name="tab-display">
+        <div class="tab-list" v-if="showTabList" ref="tabList">
+          <single-tab-detail v-for="tab in window.tabs" :tab="tab"></single-tab-detail>
+        </div>
+      </transition>
     </div>
   `
 });

@@ -151,22 +151,15 @@ body {
 }
 
 .tab-list {
-  transition: all .3s;
   display: flex;
   flex-direction: column;
-  /* background-color: #fff; */
 }
-.hide-tab-list {
-  z-index: -1;
+.tab-display-enter-active, .tab-display-leave-active {
+  transition: all .3s;
+}
+.tab-display-enter, .tab-display-leave-to {
   transform: translateY(-50%);
-  max-height: 0;
   opacity: 0;
-}
-.show-tab-list {
-  z-index: 0;
-  transform: translateY(0);
-  max-height: auto;
-  opacity: 1;
 }
 .single-tab-detail {
   display: flex;
