@@ -111,7 +111,10 @@ Vue.component("single-tab-detail", {
     <div class="single-tab-detail">
       <img v-if="tab.favIconUrl" :src="tab.favIconUrl" class="favicon">
       <i v-else class="fa fa-question-circle favicon"></i>
-      <div class="single-tab-url">{{ tab.url }}</div>
+      <div class="detail">
+        <div class="single-tab-title">{{ tab.title }}</div>
+        <div class="single-tab-url">{{ tab.url }}</div>
+      </div>
       <div class="fa fa-external-link"></div>
     </div>
   `
