@@ -21,7 +21,13 @@
   <div id="wrapper">
     <div id="header" @click="openSyncSavedWindowsHome">
       <img id="icon" src="../share/icons/icon.png">
-      Sync Saved Windows
+      Sync Saved Windows 
+      <div class="hsep"></div>
+      <i class="fa fa-firefox"></i> 
+      <div class="hsep"></div>
+      <i class="fa fa-chrome"></i> 
+      <div class="hsep"></div>
+      <i class="fa fa-globe"></i>
     </div>
     <div id="content">
     <div id="sign-in-button" @click="clickOnAccount">
@@ -44,6 +50,12 @@
           <span v-else>Sign in with Google</span>
         </span>
       </div>
+    </div>
+    <div id="no-window-message" v-if="savedWindows.length == 0">
+      <div>
+        Windows saved with the <i class="fa fa-firefox"></i> or <i class="fa fa-chrome"></i> extension will be displayed here
+      </div>
+      <div><i class="fa fa-bars"></i> <i class="fa fa-caret-right"></i> <i class="fa fa-home"></i></div>
     </div>
     <single-window v-for="(w, wid) in savedWindows" 
       :window="w"

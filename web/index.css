@@ -46,6 +46,9 @@ body {
   height: 1.5em;
   margin-right: .5em;
 }
+.hsep {
+  min-width: 15px;
+}
 
 #content {
   flex-grow: 1;
@@ -88,6 +91,28 @@ body {
 }
 .buttonContentWrapper .buttonContents > * {
   text-align: center;
+}
+
+#no-window-message {
+  width: 80%;
+  max-width: 600px;
+  color: #757575;
+  box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+}
+#no-window-message:hover {
+  box-shadow: 0px 0px 3px 3px rgba(63,81,181,.5);
+}
+#no-window-message > div {
+  text-align: center;
+  margin: 5px 15px;
+}
+#no-window-message > div:first-child {
+  margin-top: 15px;
+}
+#no-window-message > div:last-child {
+  margin-bottom: 15px;
 }
 
 .single-window {
