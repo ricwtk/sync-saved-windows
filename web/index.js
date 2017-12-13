@@ -175,7 +175,7 @@ Vue.component("global-actions", {
       this.$emit("newwindow");
     },
     goHome: function () {
-      window.open("../", "_blank");
+      window.open("../", "_self");
     }
   },
   template: `
