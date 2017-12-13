@@ -68,6 +68,11 @@ Vue.component("single-window", {
   methods: {
     toggleTabList: function () {
       this.showTabList = !this.showTabList;
+    },
+    openAllTabs: function () {
+      this.window.tabs.map(tab => {
+        window.open(tab.url);
+      });
     }
   },
   template: `
@@ -78,7 +83,7 @@ Vue.component("single-window", {
         </div>
         <div class="actions-group">
           <div class="action fa fa-times"></div>
-          <div class="action fa fa-window-restore"></div>
+          <div class="action fa fa-window-restore" @click="openAllTabs"></div>
         </div>
       </div>
       <transition name="tab-display">
@@ -100,6 +105,11 @@ Vue.component("single-tab", {
 
 Vue.component("single-tab-detail", {
   props: ["tab"],
+  methods: {
+    openTab: function () {
+      window.open(this.tab.url);
+    }
+  },
   template: `
     <div class="single-tab-detail">
       <div class="description">
@@ -112,7 +122,7 @@ Vue.component("single-tab-detail", {
       </div>
       <div class="actions-group">
         <div class="action fa fa-minus"></div>
-        <div class="action fa fa-external-link"></div>        
+        <div class="action fa fa-external-link" @click="openTab"></div>  
       </div>
     </div>
   `
