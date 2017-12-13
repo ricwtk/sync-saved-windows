@@ -1,8 +1,3 @@
-// var signedIn = false;
-
-function onSuccess(googleUser) {
-  console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-}
 function checkSignInStatus() {
   gapi.load("client:auth2", () => {
     gapi.client.init({
@@ -21,7 +16,7 @@ function accountStatusListener(signedIn) {
     v_app.email = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile().getEmail();
     getFileId().then(getFileContent).then(res => {
       v_app.savedWindows = res;
-      console.log(res);
+      // console.log(res);
     });
   } else {
     v_app.signedIn = false;
@@ -42,7 +37,7 @@ function getFileId() {
     fields: "files(id)"
   }).then(resp => {
     let files = resp.result.files;
-    console.log(files.map(f => f.id));
+    // console.log(files.map(f => f.id));
     if (files.length < 1) {
       // create file
       return createFile().then(getFileId);
@@ -178,7 +173,7 @@ Vue.component("global-actions", {
       <template v-if="showMenu">
         <div class="g-action-button fa fa-times" @click="showMenu = false"></div>
         <div class="g-action-button fa fa-refresh" @click="refresh"></div>
-        <div class="g-action-button fa fa-plus" @click="newWindow"></div>
+        <!--<div class="g-action-button fa fa-plus" @click="newWindow"></div>-->
         <div class="g-action-button fa fa-home" @click="goHome"></div>
       </template>
       <div v-else class="g-action-button fa fa-bars" @click="showMenu = true"></div>
