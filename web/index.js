@@ -42,6 +42,7 @@ function getFileId() {
     fields: "files(id)"
   }).then(resp => {
     let files = resp.result.files;
+    console.log(files.map(f => f.id));
     if (files.length < 1) {
       // create file
     } else {
@@ -56,7 +57,17 @@ function getFileContent(fileId) {
   }).then(resp => {
     return resp.result;
   });
-} 
+}
+function updateFileContent(fileId) {
+  return gapi.client.request({
+    path: "/upload/drive/v3/files/" + fileId,
+    method: "PATCH",
+    params: {
+      uploadType: "media"
+    },
+    body: JSON.stringify(v_app.savedWindows)
+  });
+}
 
 Vue.component("single-window", {
   props: ["window"],
@@ -158,6 +169,7 @@ v_app = new Vue({
         if (this.savedWindows[wid].tabs.length == 0) this.savedWindows.splice(wid, 1);
       }
       // save to database
+      getFileId().then(updateFileContent);
     }
   }
 })
