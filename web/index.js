@@ -45,10 +45,18 @@ function getFileId() {
     console.log(files.map(f => f.id));
     if (files.length < 1) {
       // create file
+      return createFile().then(getFileId);
     } else {
       return files[0].id;
     }
   })
+}
+function createFile() {
+  return gapi.client.drive.files.create({
+    name: "savedtabs.json",
+    parents: ["appDataFolder"],
+    fields: "id, name"
+  });
 }
 function getFileContent(fileId) {
   return gapi.client.drive.files.get({
