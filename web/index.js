@@ -168,6 +168,9 @@ Vue.component("global-actions", {
     },
     newWindow: function () {
       this.$emit("newwindow");
+    },
+    goHome: function () {
+      window.open("../", "_blank");
     }
   },
   template: `
@@ -176,6 +179,7 @@ Vue.component("global-actions", {
         <div class="g-action-button fa fa-times" @click="showMenu = false"></div>
         <div class="g-action-button fa fa-refresh" @click="refresh"></div>
         <div class="g-action-button fa fa-plus" @click="newWindow"></div>
+        <div class="g-action-button fa fa-home" @click="goHome"></div>
       </template>
       <div v-else class="g-action-button fa fa-bars" @click="showMenu = true"></div>
     </div>
