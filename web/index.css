@@ -217,5 +217,6 @@ body {
   align-items: center;
   cursor: pointer;
   margin-top: 10px;
+  user-select: none;
 }
 #global-actions .g-action-button:hover { background-color: #7986CB; }
