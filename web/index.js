@@ -158,6 +158,16 @@ Vue.component("global-actions", {
     };
   },
   methods: {
+    openMenu: function () {
+      this.showMenu = true;
+      Vue.nextTick(() => {
+        window.addEventListener("click", this.closeMenu);
+      });
+    },
+    closeMenu: function () {
+      this.showMenu = false;
+      window.removeEventListener("click", this.closeMenu);
+    },
     refresh: function () {
       this.$emit("refresh");
     },
@@ -171,12 +181,12 @@ Vue.component("global-actions", {
   template: `
     <div id="global-actions">
       <template v-if="showMenu">
-        <div class="g-action-button fa fa-times" @click="showMenu = false"></div>
+        <div class="g-action-button fa fa-times" @click="closeMenu"></div>
         <div class="g-action-button fa fa-refresh" @click="refresh"></div>
         <!--<div class="g-action-button fa fa-plus" @click="newWindow"></div>-->
         <div class="g-action-button fa fa-home" @click="goHome"></div>
       </template>
-      <div v-else class="g-action-button fa fa-bars" @click="showMenu = true"></div>
+      <div v-else class="g-action-button fa fa-bars" @click="openMenu"></div>
     </div>
   `
 })
