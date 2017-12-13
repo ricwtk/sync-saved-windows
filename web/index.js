@@ -73,6 +73,12 @@ Vue.component("single-window", {
       this.window.tabs.map(tab => {
         window.open(tab.url);
       });
+    },
+    removeWindow: function () {
+      this.$emit("removewindow");
+    },
+    removeTab: function (tid) {
+      this.$emit("removewindow", tid);
     }
   },
   template: `
@@ -82,13 +88,13 @@ Vue.component("single-window", {
           <single-tab v-for="tab in window.tabs" :tab="tab"></single-tab>
         </div>
         <div class="actions-group">
-          <div class="action fa fa-times"></div>
+          <div class="action fa fa-times" @click="removeWindow"></div>
           <div class="action fa fa-window-restore" @click="openAllTabs"></div>
         </div>
       </div>
       <transition name="tab-display">
         <div class="tab-list" v-if="showTabList" ref="tabList">
-          <single-tab-detail v-for="tab in window.tabs" :tab="tab"></single-tab-detail>
+          <single-tab-detail v-for="(tab, tid) in window.tabs" :tab="tab" @removetab="removeTab(tid)"></single-tab-detail>
         </div>
       </transition>
     </div>
@@ -108,6 +114,9 @@ Vue.component("single-tab-detail", {
   methods: {
     openTab: function () {
       window.open(this.tab.url);
+    },
+    removeTab: function () {
+      this.$emit("removetab");
     }
   },
   template: `
@@ -121,7 +130,7 @@ Vue.component("single-tab-detail", {
         </div>
       </div>
       <div class="actions-group">
-        <div class="action fa fa-minus"></div>
+        <div class="action fa fa-minus" @click="removeTab"></div>
         <div class="action fa fa-external-link" @click="openTab"></div>  
       </div>
     </div>
@@ -140,6 +149,9 @@ v_app = new Vue({
     clickOnAccount: function () {
       if (this.signedIn) signOutAccount();
       else signInAccount();
+    },
+    removeWindow: function (wid, tid) {
+      console.log("removeWindow", wid, tid);
     }
   }
 })
