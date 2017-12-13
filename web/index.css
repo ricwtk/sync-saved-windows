@@ -197,3 +197,25 @@ body {
 .action.fa-minus:hover { background-color: #FFD54F; }
 .action.fa-external-link { background-color: #4caf50; }
 .action.fa-external-link:hover { background-color: #81C784; }
+
+#global-actions {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column-reverse;
+}
+#global-actions .g-action-button {
+  font-size: 20px;
+  height: 60px;
+  width: 60px;
+  color: white;
+  background-color: #3F51B5;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 10px;
+}
+#global-actions .g-action-button:hover { background-color: #7986CB; }

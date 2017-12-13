@@ -50,6 +50,10 @@
       @removewindow="removeWindow(wid, $event)">
     </single-window>
     </div>
+    <global-actions 
+      @refresh="refreshFromDatabase"
+      @newwindow="addNewWindow">
+    </global-actions>
   </div>
   <script src="https://apis.google.com/js/api:platform.js?onload=checkSignInStatus" async defer></script>
   <script src="index.js"></script>

@@ -148,6 +148,32 @@ Vue.component("single-tab-detail", {
   `
 });
 
+Vue.component("global-actions", {
+  data: function () {
+    return {
+      showMenu: false
+    };
+  },
+  methods: {
+    refresh: function () {
+      this.$emit("refresh");
+    },
+    newWindow: function () {
+      this.$emit("newwindow");
+    }
+  },
+  template: `
+    <div id="global-actions">
+      <template v-if="showMenu">
+        <div class="g-action-button fa fa-times" @click="showMenu = false"></div>
+        <div class="g-action-button fa fa-refresh" @click="refresh"></div>
+        <div class="g-action-button fa fa-plus" @click="newWindow"></div>
+      </template>
+      <div v-else class="g-action-button fa fa-bars" @click="showMenu = true"></div>
+    </div>
+  `
+})
+
 v_app = new Vue({
   el: "#wrapper",
   data: {
@@ -170,6 +196,12 @@ v_app = new Vue({
       }
       // save to database
       getFileId().then(updateFileContent);
-    }
+    },
+    refreshFromDatabase: function () {
+      getFileId().then(getFileContent).then(res => {
+        this.savedWindows = res;
+      });
+    },
+    addNewWindow: function () {}
   }
 })
