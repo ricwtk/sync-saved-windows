@@ -152,6 +152,12 @@ v_app = new Vue({
     },
     removeWindow: function (wid, tid) {
       console.log("removeWindow", wid, tid);
+      if (tid == undefined) this.savedWindows.splice(wid, 1);
+      else {
+        this.savedWindows[wid].tabs.splice(tid, 1);
+        if (this.savedWindows[wid].tabs.length == 0) this.savedWindows.splice(wid, 1);
+      }
+      // save to database
     }
   }
 })
