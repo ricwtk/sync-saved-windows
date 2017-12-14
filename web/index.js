@@ -206,10 +206,15 @@ v_app = new Vue({
     },
     removeWindow: function (wid, tid) {
       console.log("removeWindow", wid, tid);
-      if (tid == undefined) this.savedWindows.splice(wid, 1);
-      else {
-        this.savedWindows[wid].tabs.splice(tid, 1);
-        if (this.savedWindows[wid].tabs.length == 0) this.savedWindows.splice(wid, 1);
+      if (tid == undefined) {
+        let conf = confirm("Delete the window?");
+        if (conf) this.savedWindows.splice(wid, 1);
+      } else {
+        let conf = confirm("Delete tab: " + this.savedWindows[wid].tabs[tid].title + "?");
+        if (conf) {
+          this.savedWindows[wid].tabs.splice(tid, 1);
+          if (this.savedWindows[wid].tabs.length == 0) this.savedWindows.splice(wid, 1);
+        }
       }
       // save to database
       getFileId().then(updateFileContent);
