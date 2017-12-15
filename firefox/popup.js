@@ -1,24 +1,5 @@
 var dataPort;
 
-const REDIRECT_URL = browser.identity.getRedirectURL();
-const API_KEY = "AIzaSyA_31R6_xIgqi2fTs-48Z_UQ0L1d9X1JlA";
-const CLIENT_ID = "155155797881-435186je4g6s5f4j8f28oj1ihdmkv33g.apps.googleusercontent.com";
-var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-const SCOPES = ['https://www.googleapis.com/auth/drive.appfolder', 'email'];
-const AUTH_URL =
-`https://accounts.google.com/o/oauth2/auth
-?client_id=${CLIENT_ID}
-&response_type=token
-&redirect_uri=${encodeURIComponent(REDIRECT_URL)}
-&scope=${encodeURIComponent(SCOPES.join(' '))}`;
-var ACCESS_TOKEN = "";
-
-function extractAccessToken(str) {
-  let x = new URL(str);
-  let y = new URLSearchParams(x.hash.substring(1));
-  return y.get("access_token");
-}
-
 function refreshOpenedWindows() {
   browser.tabs.query({}).then((tabs) => {
     vueApp.openedWindows = [];
@@ -42,72 +23,20 @@ function refreshOpenedWindows() {
   });
 }
 
-function afterGoogleLogin(authResult) {
-  setStorageLocation(false);
-  ACCESS_TOKEN = extractAccessToken(authResult);
-  if (!ACCESS_TOKEN) {
-    throw "Authorization failure";
-  } else {
-    let valURL = new URL("https://www.googleapis.com/oauth2/v3/tokeninfo");
-    valURL.search = new URLSearchParams([
-      ["access_token", ACCESS_TOKEN]
-    ]);
-    let validationRequest = new Request(valURL.href, {
-      method: "GET"
-    });
-    return fetch(validationRequest).then(resp => {
-      if (resp.status == 200) {
-        resp.json().then(json => {
-          if (json.aud && (json.aud === CLIENT_ID)) {
-            let x = new URL("https://www.googleapis.com/oauth2/v1/userinfo");
-            x.search = new URLSearchParams([
-              ["alt", "json"]
-            ]);
-            let req = new Request(x.href, {
-              method: "GET",
-              headers: getRequestHeader()
-            });
-            return fetch(req).then(r => {
-              if (r.status == 200) {
-                return r.json();
-              } else {
-                throw r.status;
-              }
-            }).then(profile => {
-              vueApp.remoteAccount = profile.email;
-            });
-          } else {
-            throw resp.status;
-          }
-        });
-      } else {
-        throw resp.status;
-      }
-    });
-  }
-}
-
-
-
-
-
-
 // ------------------------ Vue components --------------------------------
 
 Vue.component('single-window', {
-  props: ['window', 'actions', 'notLast', 'rootList', 'windowIndex', 'group'],
+  props: ['window', 'actions', 'notLast', 'windowIndex', 'group'],
   created: function () {
   },
   methods: {
     saveWindow: function () {
-      // saveWindowToStorage(this.window);
       dataPort.postMessage({
         "actions": ["save-window"],
         "save-window": this.window
       });
     },
     removeWindow: function () {
-      // removeWindowFromStorage(this.windowIndex, this.rootList);
       dataPort.postMessage({
         "actions": ["remove-window"],
         "remove-window": this.windowIndex
@@ -158,9 +87,7 @@ var vueApp = new Vue({
     savedWindows: [],
     signedIn: false,
     useLocal: true,
-    remoteAccount: "",
-    notiMsg: "",
-    showNotify: false
+    remoteAccount: ""
   },
   computed: {
     logInStatus: function () {
@@ -202,13 +129,5 @@ var vueApp = new Vue({
     openHelp: function () {
       window.open("doc/help.html");
     },
-    setNotification: function (msg) {
-      this.notiMsg = msg;
-      this.showNotify = true;
-      setTimeout(() => {
-        this.notiMsg = "";
-        this.showNotify = false;
-      }, 1000);
-    }
   }
 });

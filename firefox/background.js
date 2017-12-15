@@ -77,8 +77,7 @@ function getSavedWindows () {
             "saved-windows": savedWindows
           });
           return resp;
-        })
-        .then(console.log);
+        });
     }
   }
 }
@@ -112,18 +111,17 @@ function saveToStorage() {
     if (signedIn)
       gDriveGetFileId()
         .then(file => gDriveSetContent(file, savedWindows))
-        .then(console.log);
   }
 }
 function removeAllWindowsFromStorage() {
+  savedWindows = [];
+  if (dataPort) dataPort.postMessage({"saved-windows": savedWindows})
   if (useLocal) { // local
-    browser.storage.local.remove("sswin").then(getSavedWindows);
+    browser.storage.local.remove("sswin");
   } else { // gdrive
     if (signedIn) 
       gDriveGetFileId()
         .then(file => gDriveSetContent(file, []))
-        .then(getSavedWindows)
-        .then(console.log);
   }
 }
 
