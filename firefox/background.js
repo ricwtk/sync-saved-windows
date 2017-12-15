@@ -274,22 +274,43 @@ function afterGoogleLogin(authResult) {
   }
 }
 
+// --------------------- Refresh -----------------------------
+function refresh() {
+  if (!useLocal && signedIn) {
+    browser.identity.launchWebAuthFlow({
+      interactive: false,
+      url: AUTH_URL
+    }).then(res => {
+      getSavedWindows();
+    }, res => {
+      useLocal = true;
+      setStorageLocation(true);
+      signedIn = false;
+      getSavedWindows();
+    });
+  } else {
+    getSavedWindows();
+  }
+}
+
 // --------------------- Initialisation -----------------------
 browser.storage.local.get("sswin_location").then(res => {
   if (res['sswin_location'] == undefined || res['sswin_location'] == 'local') {
     useLocal = true;
     getSavedWindows();
   } else {
-    useLocal = false;
     // check if logged in 
     browser.identity.launchWebAuthFlow({
       interactive: false,
       url: AUTH_URL
     }).then(res => {
+      useLocal = false;
       signedIn = true;
       console.log("signed in to Google");
       afterGoogleLogin(res).then(getSavedWindows);
     }, res => {
+      useLocal = true;
+      setStorageLocation(true);
       signedIn = false;
       console.log("not signed in to Google");
       getSavedWindows();
@@ -314,7 +335,7 @@ function connected(p) {
     if (m.actions.includes("save-window")) saveWindowToStorage(m["save-window"]);
     if (m.actions.includes("remove-window")) removeWindowFromStorage(m["remove-window"]);
     if (m.actions.includes("remove-all-windows")) removeAllWindowsFromStorage();
-    if (m.actions.includes("refresh")) getSavedWindows();
+    if (m.actions.includes("refresh")) refresh();
     dataPort.postMessage(retM);
   });  
 }
