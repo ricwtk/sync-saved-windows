@@ -82,6 +82,50 @@ function getSavedWindows () {
     }
   }
 }
+function saveWindowToStorage(win) {
+  // remove tabs of which the tabs.create cannot be used, i.e.
+  // chrome: URLs -- javascript: URLs -- data: URLs -- file: URLs -- about: URLs
+  let winToSave = {
+    tabs: win.tabs.filter(tab => !tab.url.startsWith("chrome") 
+      && !tab.url.startsWith("javascript")
+      && !tab.url.startsWith("data")
+      && !tab.url.startsWith("file")
+      && !tab.url.startsWith("about")
+    )
+  };
+  if (winToSave.tabs.length > 0) {
+    savedWindows.push(winToSave);
+    saveToStorage();
+  }
+}
+function removeWindowFromStorage(windowIndex) {
+  savedWindows.splice(windowIndex, 1);
+  saveToStorage();
+}
+function saveToStorage() {
+  if (dataPort) dataPort.postMessage({"saved-windows": savedWindows});
+  if (useLocal) { // local
+    browser.storage.local.set({
+      "sswin": savedWindows
+    });
+  } else { // gdrive
+    if (signedIn)
+      gDriveGetFileId()
+        .then(file => gDriveSetContent(file, savedWindows))
+        .then(console.log);
+  }
+}
+function removeAllWindowsFromStorage() {
+  if (useLocal) { // local
+    browser.storage.local.remove("sswin").then(getSavedWindows);
+  } else { // gdrive
+    if (signedIn) 
+      gDriveGetFileId()
+        .then(file => gDriveSetContent(file, []))
+        .then(getSavedWindows)
+        .then(console.log);
+  }
+}
 
 // ------------------------ Google Drive --------------------------
 function extractAccessToken(str) {
@@ -167,6 +211,24 @@ function gDriveGetContent(file) {
     }
   });
 }
+function gDriveSetContent(file, content) {
+  let x = new URL("https://www.googleapis.com/upload/drive/v3/files/" + file.id);
+  x.search = new URLSearchParams([
+    ["uploadType", "media"]
+  ]);
+  let req = new Request(x.href, {
+    method: "PATCH",
+    headers: getRequestHeader(),
+    body: JSON.stringify(content)
+  });
+  return fetch(req).then((resp) => {
+    if (resp.status == 200) {
+      return resp.json();
+    } else {
+      throw resp.status;
+    }
+  })
+}
 function afterGoogleLogin(authResult) {
   setStorageLocation(false);
   ACCESS_TOKEN = extractAccessToken(authResult);
@@ -251,6 +313,10 @@ function connected(p) {
     if (m.actions.includes("signed-in")) retM["signed-in"] = signedIn;
     if (m.actions.includes("remote-account")) retM["remote-account"] = remoteAccount;
     if (m.actions.includes("sign-in-out")) signInOut();
+    if (m.actions.includes("save-window")) saveWindowToStorage(m["save-window"]);
+    if (m.actions.includes("remove-window")) removeWindowFromStorage(m["remove-window"]);
+    if (m.actions.includes("remove-all-windows")) removeAllWindowsFromStorage();
+    if (m.actions.includes("refresh")) getSavedWindows();
     dataPort.postMessage(retM);
   });  
 }

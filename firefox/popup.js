@@ -1,3 +1,5 @@
+var dataPort;
+
 const REDIRECT_URL = browser.identity.getRedirectURL();
 const API_KEY = "AIzaSyA_31R6_xIgqi2fTs-48Z_UQ0L1d9X1JlA";
 const CLIENT_ID = "155155797881-435186je4g6s5f4j8f28oj1ihdmkv33g.apps.googleusercontent.com";
@@ -98,10 +100,18 @@ Vue.component('single-window', {
   },
   methods: {
     saveWindow: function () {
-      saveWindowToStorage(this.window);
+      // saveWindowToStorage(this.window);
+      dataPort.postMessage({
+        "actions": ["save-window"],
+        "save-window": this.window
+      });
     },
     removeWindow: function () {
-      removeWindowFromStorage(this.windowIndex, this.rootList);
+      // removeWindowFromStorage(this.windowIndex, this.rootList);
+      dataPort.postMessage({
+        "actions": ["remove-window"],
+        "remove-window": this.windowIndex
+      });
     },
     restoreWindow: function () {
       browser.windows.create({
@@ -150,8 +160,7 @@ var vueApp = new Vue({
     useLocal: true,
     remoteAccount: "",
     notiMsg: "",
-    showNotify: false,
-    dataPort: ""
+    showNotify: false
   },
   computed: {
     logInStatus: function () {
@@ -164,8 +173,8 @@ var vueApp = new Vue({
   },
   created: function () {
     // get saved windows
-    this.dataPort = browser.runtime.connect({name:"popup-background"});
-    this.dataPort.onMessage.addListener(m => {
+    dataPort = browser.runtime.connect({name:"popup-background"});
+    dataPort.onMessage.addListener(m => {
       console.log("Received from background.js", m);
       let mKeys = Object.keys(m);
       if (mKeys.includes("saved-windows")) this.savedWindows = m["saved-windows"];
@@ -174,7 +183,7 @@ var vueApp = new Vue({
       if (mKeys.includes("remote-account")) this.remoteAccount = m["remote-account"];
     });
 
-    this.dataPort.postMessage({actions: ["saved-windows", "use-local", "signed-in", "remote-account"]});
+    dataPort.postMessage({actions: ["refresh", "saved-windows", "use-local", "signed-in", "remote-account"]});
 
     // get opened windows
     refreshOpenedWindows();
@@ -185,10 +194,10 @@ var vueApp = new Vue({
   },
   methods: {
     removeSaved: function () {
-      removeAllWindowsFromStorage();
+      dataPort.postMessage({actions: ["remove-all-windows"]});
     },
     signInOut: function () {
-      this.dataPort.postMessage({ actions: ["sign-in-out"] });
+      dataPort.postMessage({ actions: ["sign-in-out"] });
     },
     openHelp: function () {
       window.open("doc/help.html");
