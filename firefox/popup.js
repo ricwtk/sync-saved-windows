@@ -150,7 +150,8 @@ var vueApp = new Vue({
     useLocal: true,
     remoteAccount: "",
     notiMsg: "",
-    showNotify: false
+    showNotify: false,
+    dataPort: ""
   },
   computed: {
     logInStatus: function () {
@@ -162,73 +163,32 @@ var vueApp = new Vue({
     }
   },
   created: function () {
-    // load auth2
-    // gapi.load('client:auth2', initClient);
-
-    // check user preference if saving to local
-    browser.storage.local.get("sswin_location").then(res => {
-      if (res['sswin_location'] == undefined || res['sswin_location'] == 'local') {
-        this.useLocal = true;
-      } else {
-        this.useLocal = false;
-        // check if logged in 
-        browser.identity.launchWebAuthFlow({
-          interactive: false,
-          url: AUTH_URL
-        }).then(res => {
-          this.signedIn = true;
-          console.log("signed in to Google", res);
-          afterGoogleLogin(res);
-        }, res => {
-          this.signedIn = false;
-          console.log("not signed in to Google", res);
-        });
-      }
+    // get saved windows
+    this.dataPort = browser.runtime.connect({name:"popup-background"});
+    this.dataPort.onMessage.addListener(m => {
+      console.log("Received from background.js", m);
+      let mKeys = Object.keys(m);
+      if (mKeys.includes("saved-windows")) this.savedWindows = m["saved-windows"];
+      if (mKeys.includes("use-local")) this.useLocal = m["use-local"];
+      if (mKeys.includes("signed-in")) this.signedIn = m["signed-in"];
+      if (mKeys.includes("remote-account")) this.remoteAccount = m["remote-account"];
     });
 
-    // get opened windows
-    refreshOpenedWindows();   
+    this.dataPort.postMessage({actions: ["saved-windows", "use-local", "signed-in", "remote-account"]});
 
-    // get saved windows
-    getSavedWindows(this);
+    // get opened windows
+    refreshOpenedWindows();
 
     // add listener
     browser.tabs.onCreated.addListener(refreshOpenedWindows);
     browser.tabs.onRemoved.addListener(refreshOpenedWindows);
-  },
-  watch: {
-    signedIn: function () {
-      getSavedWindows(this);
-    },
-    useLocal: function () {
-      getSavedWindows(this);
-    }
   },
   methods: {
     removeSaved: function () {
       removeAllWindowsFromStorage();
     },
     signInOut: function () {
-      // console.log(gapi.auth2);
-      if (!this.signedIn) {
-        browser.identity.launchWebAuthFlow({
-          interactive: true,
-          url: AUTH_URL
-        }).then((res) => {
-          console.log("Logged in to Google");
-          afterGoogleLogin(res);
-          this.useLocal = false;
-          this.signedIn = true;
-        }, (res) => {
-          console.log("Not logged in to Google");
-          this.signedIn = false;
-          this.useLocal = true;
-        });
-      } else {
-        this.signedIn = false;
-        this.useLocal = true;
-        setStorageLocation(true);
-      }
+      this.dataPort.postMessage({ actions: ["sign-in-out"] });
     },
     openHelp: function () {
       window.open("doc/help.html");
@@ -242,4 +202,4 @@ var vueApp = new Vue({
       }, 1000);
     }
   }
-})
+});
