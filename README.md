@@ -5,3 +5,9 @@ Sync saved windows. Inspired by TabCloud (https://addons.mozilla.org/en-GB/firef
 This extension provides a toolbar button with a popup of a list of saved and opened windows. List can be synchronised through Google account.
 
 The reason for this extension is due to the reason that TabCloud does not support Firefox Quantum.
+
+## Changelog
+
+- 2017 - 12 - 16
+
+Using background.js to sustain the log in session to reduce the loading time when the popup is displayed.
