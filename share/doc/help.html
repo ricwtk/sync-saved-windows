@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>Help for Sync Saved Windows</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto+Slab|Roboto+Mono" rel="stylesheet">
+    <link rel="stylesheet" href="../font-awesome-4.7.0/css/font-awesome.min.css">
+    <script src="../js/vue.min.js"></script>
     <style>
       * {
         font-family: "Roboto Slab", serif;
@@ -19,6 +21,12 @@
       #title {
         font-size: 200%;
         border-bottom: 1px dashed;
+        display: flex;
+        align-items: center;
+      }
+      img {
+        height: 1em;
+        margin-right: .25em;
       }
       section {
         padding-bottom: 10px;
@@ -28,13 +36,47 @@
         text-decoration: underline dotted;
         color: inherit;
       }
-      a:hover{
+      a:hover {
         color: #009688;
+      }
+      #buttons {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        color: #E8EAF6;
+        background-color: #3F51B5;
+      }
+      #buttons .fa {
+        padding: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+        font-size: 200%;
+      }
+      #buttons .fa:hover {
+        color: #3F51B5;
+        background-color: #E8EAF6;
+      }
+      .button-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
       }
     </style>
   </head>
   <body>
-    <div id="title">Help for Sync Saved Windows</div>
+    <div id="buttons">
+      <div class="fa fa-home" title="Home" @click="goto('https://ricwtk.github.io/sync-saved-windows')"></div>
+      <div class="button-row">
+        <div class="fa fa-firefox" title="Firefox Extension" @click="goto('https://addons.mozilla.org/en-GB/firefox/addon/sync-saved-windows/')"></div>
+        <div class="fa fa-chrome" title="Chrome Extension" @click="goto('https://chrome.google.com/webstore/detail/sync-saved-windows/nfjkecjcakdlmcchjhelfiefamhnfhfa')"></div>
+        <div class="fa fa-globe" title="Web Application" @click="goto('https://ricwtk.github.io/sync-saved-windows/web')"></div>
+      </div>
+    </div>
+
+    <div id="title"><img src="../icons/icon.png">Help for Sync Saved Windows</div>
     <section>
       <h1>Supported websites</h1>
 
@@ -53,5 +95,6 @@
 
       You can find the link to Firefox Extension, Chrome Extension, and web app for Sync Saved Windows <a href="https://ricwtk.github.io/sync-saved-windows">here</a>.
     </section>
+    <script src="help.js"></script>
   </body>
 </html>
