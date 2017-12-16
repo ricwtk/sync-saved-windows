@@ -1,10 +1,4 @@
-var ACCESS_TOKEN = "";
-
-function extractAccessToken(str) {
-  let x = new URL(str);
-  let y = new URLSearchParams(x.hash.substring(1));
-  return y.get("access_token");
-}
+var dataPort;
 
 function refreshOpenedWindows() {
   chrome.tabs.query({}, tabs => {
@@ -29,50 +23,24 @@ function refreshOpenedWindows() {
   });
 }
 
-function afterGoogleLogin(authResult) {
-  setStorageLocation(false);
-  // ACCESS_TOKEN = extractAccessToken(authResult);
-  ACCESS_TOKEN = authResult;
-  if (!ACCESS_TOKEN) {
-    throw "Authorization failure";
-  } else {
-    let x = new URL("https://www.googleapis.com/oauth2/v1/userinfo");
-    x.search = new URLSearchParams([
-      ["alt", "json"]
-    ]);
-    let req = new Request(x.href, {
-      method: "GET",
-      headers: getRequestHeader()
-    });
-    return fetch(req).then(r => {
-      if (r.status == 200) {
-        return r.json();
-      } else {
-        throw r.status;
-      }
-    }).then(profile => {
-      vueApp.remoteAccount = profile.email;
-    });
-  }
-}
-
-
-
-
-
-
 // ------------------------ Vue components --------------------------------
 
 Vue.component('single-window', {
-  props: ['window', 'actions', 'notLast', 'rootList', 'windowIndex', 'group'],
+  props: ['window', 'actions', 'notLast', 'windowIndex', 'group'],
   created: function () {
   },
   methods: {
     saveWindow: function () {
-      saveWindowToStorage(this.window);
+      dataPort.postMessage({
+        "actions": ["save-window"],
+        "save-window": this.window
+      });
     },
     removeWindow: function () {
-      removeWindowFromStorage(this.windowIndex, this.rootList);
+      dataPort.postMessage({
+        "actions": ["remove-window"],
+        "remove-window": this.windowIndex
+      });
     },
     restoreWindow: function () {
       chrome.windows.create({
@@ -119,9 +87,7 @@ var vueApp = new Vue({
     savedWindows: [],
     signedIn: false,
     useLocal: true,
-    remoteAccount: "",
-    notiMsg: "",
-    showNotify: false
+    remoteAccount: ""
   },
   computed: {
     logInStatus: function () {
@@ -133,86 +99,35 @@ var vueApp = new Vue({
     }
   },
   created: function () {
-    // load auth2
-    // gapi.load('client:auth2', initClient);
-
-    // check user preference if saving to local
-    chrome.storage.local.get("sswin_location", res => {
-      if (res['sswin_location'] == undefined || res['sswin_location'] == 'local') {
-        this.useLocal = true;
-      } else {
-        this.useLocal = false;
-        // check if logged in 
-        chrome.identity.getAuthToken({
-          interactive: false
-        }, token => {
-          if (token == undefined) {
-            this.signedIn = false;
-            console.log("not signed in to Google");
-          } else {
-            this.signedIn = true;
-            console.log("signed in to Google");
-            afterGoogleLogin(token);
-          }
-        });
-      }
+    // get saved windows
+    dataPort = chrome.runtime.connect({name:"popup-background"});
+    dataPort.onMessage.addListener(m => {
+      console.log("Received from background.js", m);
+      let mKeys = Object.keys(m);
+      if (mKeys.includes("saved-windows")) this.savedWindows = m["saved-windows"];
+      if (mKeys.includes("use-local")) this.useLocal = m["use-local"];
+      if (mKeys.includes("signed-in")) this.signedIn = m["signed-in"];
+      if (mKeys.includes("remote-account")) this.remoteAccount = m["remote-account"];
     });
 
-    // get opened windows
-    refreshOpenedWindows();   
+    dataPort.postMessage({actions: ["refresh", "saved-windows", "use-local", "signed-in", "remote-account"]});
 
-    // get saved windows
-    getSavedWindows(this);
+    // get opened windows
+    refreshOpenedWindows();
 
     // add listener
     chrome.tabs.onCreated.addListener(refreshOpenedWindows);
     chrome.tabs.onRemoved.addListener(refreshOpenedWindows);
   },
-  watch: {
-    signedIn: function () {
-      getSavedWindows(this);
-    },
-    useLocal: function () {
-      getSavedWindows(this);
-    }
-  },
   methods: {
     removeSaved: function () {
-      removeAllWindowsFromStorage();
+      dataPort.postMessage({actions: ["remove-all-windows"]});
     },
     signInOut: function () {
-      // console.log(gapi.auth2);
-      if (!this.signedIn) {
-        chrome.identity.getAuthToken({
-          interactive: true
-        }, token => {
-          if (token == undefined) {
-            console.log("Not logged in to Google");
-            this.signedIn = false;
-            this.useLocal = true;
-          } else {
-            console.log("Logged in to Google");
-            afterGoogleLogin(token);
-            this.useLocal = false;
-            this.signedIn = true;
-          }
-        });
-      } else {
-        this.signedIn = false;
-        this.useLocal = true;
-        setStorageLocation(true);
-      }
+      dataPort.postMessage({ actions: ["sign-in-out"] });
     },
     openHelp: function () {
       window.open("doc/help.html");
     },
-    setNotification: function (msg) {
-      this.notiMsg = msg;
-      this.showNotify = true;
-      setTimeout(() => {
-        this.notiMsg = "";
-        this.showNotify = false;
-      }, 1000);
-    }
   }
-})
+});
