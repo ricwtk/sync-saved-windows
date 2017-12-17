@@ -12,6 +12,7 @@
   <title>Sync Saved Windows</title>
   <link rel="icon" href="share/icons/icon.png?v=1.0">
   <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+  <link rel="stylesheet" href="share/font-awesome-4.7.0/css/font-awesome.min.css">
   <script src="share/js/vue.min.js"></script>
   <style>
   html {
@@ -90,6 +91,10 @@
     background-color: #E8EAF6;
     color: #3F51B5;
   }
+  #links .fa {
+    user-select: none;
+    -moz-user-select: none;
+  }
   </style>
 </head>
 
@@ -105,9 +110,9 @@
       </div>
     </div>
     <div id="links">
-      <div @click="openFirefox">Firefox extension</div>
-      <div @click="openChrome">Chrome extension</div>
-      <div @click="openWeb">Web</div>
+      <div class="fa fa-firefox" @click="openFirefox"> Firefox extension</div>
+      <div class="fa fa-chrome" @click="openChrome"> Chrome extension</div>
+      <div class="fa fa-globe" @click="openWeb"> Web</div>
     </div>
   </div>
   <script>
