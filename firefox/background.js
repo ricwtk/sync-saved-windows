@@ -55,7 +55,7 @@ function getSavedWindows () {
         savedWindows = [];
       }
       console.log("saved windows", savedWindows);
-      if (dataPort) dataPort.postMessage({ 
+      if (dataPort) dataPort.postMessage({
         "signed-in": signedIn,
         "use-local": useLocal,
         "remote-account": remoteAccount,
@@ -70,7 +70,7 @@ function getSavedWindows () {
         .then(resp => {
           savedWindows = resp;
           console.log("saved windows", savedWindows);
-          if (dataPort) dataPort.postMessage({ 
+          if (dataPort) dataPort.postMessage({
             "signed-in": signedIn,
             "use-local": useLocal,
             "remote-account": remoteAccount,
@@ -85,7 +85,7 @@ function saveWindowToStorage(win) {
   // remove tabs of which the tabs.create cannot be used, i.e.
   // chrome: URLs -- javascript: URLs -- data: URLs -- file: URLs -- about: URLs
   let winToSave = {
-    tabs: win.tabs.filter(tab => !tab.url.startsWith("chrome") 
+    tabs: win.tabs.filter(tab => !tab.url.startsWith("chrome")
       && !tab.url.startsWith("javascript")
       && !tab.url.startsWith("data")
       && !tab.url.startsWith("file")
@@ -119,7 +119,7 @@ function removeAllWindowsFromStorage() {
   if (useLocal) { // local
     browser.storage.local.remove("sswin");
   } else { // gdrive
-    if (signedIn) 
+    if (signedIn)
       gDriveGetFileId()
         .then(file => gDriveSetContent(file, []))
   }
@@ -299,7 +299,7 @@ browser.storage.local.get("sswin_location").then(res => {
     useLocal = true;
     getSavedWindows();
   } else {
-    // check if logged in 
+    // check if logged in
     browser.identity.launchWebAuthFlow({
       interactive: false,
       url: AUTH_URL
@@ -337,7 +337,7 @@ function connected(p) {
     if (m.actions.includes("remove-all-windows")) removeAllWindowsFromStorage();
     if (m.actions.includes("refresh")) refresh();
     dataPort.postMessage(retM);
-  });  
+  });
 }
 
 browser.runtime.onConnect.addListener(connected);
