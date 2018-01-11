@@ -2,6 +2,14 @@
 <html>
 
 <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-38752833-3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-38752833-3');
+  </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta property="og:url" content="https://ricwtk.github.io/sync-saved-windows/web">
@@ -13,7 +21,7 @@
   <link rel="icon" href="../share/icons/icon.png?v=1.0">
   <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
   <script src="../share/js/vue.min.js"></script>
-  <link rel="stylesheet" href="../share/font-awesome-4.7.0/css/font-awesome.min.css">    
+  <link rel="stylesheet" href="../share/font-awesome-4.7.0/css/font-awesome.min.css">
   <link href="index.css" rel="stylesheet">
 </head>
 
@@ -21,11 +29,11 @@
   <div id="wrapper">
     <div id="header" @click="openSyncSavedWindowsHome">
       <img id="icon" src="../share/icons/icon.png">
-      Sync Saved Windows 
+      Sync Saved Windows
       <div class="hsep"></div>
-      <i class="fa fa-firefox"></i> 
+      <i class="fa fa-firefox"></i>
       <div class="hsep"></div>
-      <i class="fa fa-chrome"></i> 
+      <i class="fa fa-chrome"></i>
       <div class="hsep"></div>
       <i class="fa fa-globe"></i>
     </div>
@@ -57,12 +65,12 @@
       </div>
       <div><i class="fa fa-bars"></i> <i class="fa fa-caret-right"></i> <i class="fa fa-home"></i></div>
     </div>
-    <single-window v-for="(w, wid) in savedWindows" 
+    <single-window v-for="(w, wid) in savedWindows"
       :window="w"
       @removewindow="removeWindow(wid, $event)">
     </single-window>
     </div>
-    <global-actions 
+    <global-actions
       @refresh="refreshFromDatabase"
       @newwindow="addNewWindow">
     </global-actions>
