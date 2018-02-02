@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Sync Saved Windows",
-  "version": "2.4",
+  "version": "2.5",
   "description": "Synchronise saved windows",
   "icons":
   {

@@ -8,6 +8,10 @@ The reason for this extension is due to the reason that TabCloud does not suppor
 
 ## Changelog
 
-- 2017 - 12 - 16
+### 2018 - 02 - 02
+
+Fix bug in Firefox extension which prevented logging in to Google account
+
+### 2017 - 12 - 16
 
 Using background.js to sustain the log in session to reduce the loading time when the popup is displayed.
