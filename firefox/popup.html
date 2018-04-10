@@ -5,55 +5,11 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">    
     <link rel="stylesheet" href="popup.css"/>
-    <script src="js/vue.min.js"></script>
+    <script src="js/vue.runtime.min.js"></script>
   </head>
 
   <body>
-    <div id="main">
-      <div class="section">Saved windows</div>
-      <template v-if="savedWindows.length == 0">
-        <div class="window">
-          <div class="tabswrapper">
-            Saved windows will be displayed here
-          </div>
-        </div>
-      </template>
-      <template v-else>
-        <single-window v-for="(window, index) in savedWindows" 
-          :window-index="index"
-          :window="window" 
-          actions="dr"
-          :not-last="index != (savedWindows.length-1)"
-          group="saved">
-        </single-window>
-        <div id="remove-all-saved" @click="removeSaved">
-          Remove all saved windows
-        </div>
-      </template>
-      
-      <div class="section">Opened windows</div>
-      <single-window v-for="(window, index) in openedWindows" 
-        :window-index="index"
-        :window="window" 
-        actions="s"
-        :not-last="index != (openedWindows.length-1)"
-        group="opened">
-      </single-window>
-
-      <div class="vsep"></div>
-
-      <div id="status">
-          {{ logInStatus }}
-      </div>
-
-      <div class="button-row">
-        <div :class="{ fa: true, 'fa-google': !signedIn, 'fa-sign-out': signedIn }" 
-          id="sign-in-out" 
-          @click="signInOut"
-          :title="signedIn ? 'Click to sign out' : 'Click to log in to Google'"></div>
-        <div class="fa fa-question" id="help" title="Help" @click="openHelp"></div>
-      </div>
-    </div>
+    <div id="main"></div>
 
     <script src="popup.js"></script>
   </body>

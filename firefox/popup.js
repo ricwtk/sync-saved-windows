@@ -48,16 +48,57 @@ Vue.component('single-window', {
       });
     }
   },
-  template: `
-    <div :class="{ window: true, addsep: notLast }" title="Click on an icon to switch to tab">
-      <div class="tabswrapper">
-        <single-tab v-for="tab in window.tabs" :tab="tab" :group="group"></single-tab>
-      </div>
-      <div v-if="actions.includes('s')" class="savewinbtn fa fa-plus" title="Save window" @click="saveWindow"></div>
-      <div v-if="actions.includes('d')" class="delwinbtn fa fa-times" title="Delete window" @click="removeWindow"></div>
-      <div v-if="actions.includes('r')" class="openwinbtn fa fa-window-restore" title="Restore window" @click="restoreWindow"></div>
-    </div>
-  `
+  render: function(createElement) {
+    return createElement("div", {
+      class: {
+        window: true,
+        addsep: this.notLast
+      },
+      attrs: {
+        title: "Click on an icon to switch to tab"
+      }
+    }, [
+      createElement("div", { class: "tabswrapper" }, 
+        this.window.tabs.map(tab => createElement("single-tab", {
+          props: {
+            tab: tab,
+            group: this.group
+          }
+        }))
+      ),
+      this.actions.includes("s") ? createElement("div", {
+        attrs: {
+          class: "savewinbtn fa fa-plus",
+          title: "Save window"
+        },
+        on: { click: this.saveWindow }
+      }) : null,
+      this.actions.includes("d") ? createElement("div", {
+        attrs: {
+          class: "delwinbtn fa fa-times",
+          title: "Delete window"
+        },
+        on: { click: this.removeWindow }
+      }) : null,
+      this.actions.includes("r") ? createElement("div", {
+        attrs: {
+          class: "openwinbtn fa fa-window-restore",
+          title: "Restore window"
+        },
+        on: { click: this.restoreWindow }
+      }) : null,
+    ])
+  },
+  // template: `
+  //   <div :class="{ window: true, addsep: notLast }" title="Click on an icon to switch to tab">
+  //     <div class="tabswrapper">
+  //       <single-tab v-for="tab in window.tabs" :tab="tab" :group="group"></single-tab>
+  //     </div>
+  //     <div v-if="actions.includes('s')" class="savewinbtn fa fa-plus" title="Save window" @click="saveWindow"></div>
+  //     <div v-if="actions.includes('d')" class="delwinbtn fa fa-times" title="Delete window" @click="removeWindow"></div>
+  //     <div v-if="actions.includes('r')" class="openwinbtn fa fa-window-restore" title="Restore window" @click="restoreWindow"></div>
+  //   </div>
+  // `
 });
 
 Vue.component('single-tab', {
@@ -74,10 +115,30 @@ Vue.component('single-tab', {
       }
     }
   },
-  template: `
-    <img v-if="tab.favIconUrl" :src="tab.favIconUrl" class="favicon" :title="tab.title" @click="onClick">
-    <i v-else class="fa fa-question-circle favicon" :title="tab.title" @click="onClick"></i>
-  `
+  render: function (createElement) {
+    if (this.tab.favIconUrl) {
+      return createElement("img", {
+        attrs: {
+          src: this.tab.favIconUrl,
+          class: "favicon",
+          title: this.tab.title
+        },
+        on: { click: this.onClick }
+      })
+    } else {
+      return createElement("i", {
+        attrs: {
+          class: "fa fa-question-circle favicon",
+          title: this.tab.title
+        },
+        on: { click: this.onClick }
+      }) 
+    }
+  },
+  // template: `
+  //   <img v-if="tab.favIconUrl" :src="tab.favIconUrl" class="favicon" :title="tab.title" @click="onClick">
+  //   <i v-else class="fa fa-question-circle favicon" :title="tab.title" @click="onClick"></i>
+  // `
 });
 
 var vueApp = new Vue({
@@ -129,5 +190,120 @@ var vueApp = new Vue({
     openHelp: function () {
       window.open("doc/help.html");
     },
+  },
+  render: function (createElement) {
+    let children = [];
+    children.push(createElement("div", { class: "section" }, "Saved windows"));
+
+    if (this.savedWindows.length == 0) {
+      children.push(createElement("div", { class: "window" }, [
+        createElement("div", { class: "tabswrapper" }, "Saved windows will be displayed here")
+      ]));
+    } else {
+      children.push(...this.savedWindows.map(
+        (window, index, winarray) => createElement("single-window", {
+          props: {
+            "window-index": index,
+            window: window,
+            actions: "dr",
+            "not-last": index != (winarray.length - 1),
+            group: "saved"
+          }
+        })
+      ));
+      children.push(createElement("div", {
+        attrs: { id: "remove-all-saved" },
+        on: { click: this.removeSaved }
+      }, "Remove all saved windows"));
+    }
+
+    children.push(createElement("div", { class: "section" }, "Opened Windows"));
+    children.push(...this.openedWindows.map(
+      (window, index, winarray) => createElement("single-window", {
+        props: {
+          "window-index": index,
+          window: window,
+          actions: "s",
+          "not-last": index != (winarray.length - 1),
+          group: "opened"
+        }
+      })
+    ));
+
+    children.push(createElement("div", { class: "vsep" }));
+
+    children.push(createElement("div", { attrs: { id: "status" } }, this.logInStatus));
+
+    children.push(createElement("div", { class: "button-row" }, [
+      createElement("div", { 
+        class: {
+          fa: true,
+          "fa-google": !this.signedIn,
+          "fa-sign-out": this.signedIn
+        },
+        attrs: {
+          id: "sign-in-out",
+          title: this.signedIn ? "Click to sign out" : "Click to log in to Google"
+        },
+        on: { click: this.signInOut }
+      }),
+      createElement("div", {
+        class: "fa fa-question",
+        attrs: {
+          id: "help",
+          title: "Help"
+        },
+        on: { click: this.openHelp }
+      })
+    ]));
+
+    return createElement("div", {}, children);
   }
+  // template: `
+  // <div id="main">
+  //   <div class="section">Saved windows</div>
+  //   <template v-if="savedWindows.length == 0">
+  //     <div class="window">
+  //       <div class="tabswrapper">
+  //         Saved windows will be displayed here
+  //       </div>
+  //     </div>
+  //   </template>
+  //   <template v-else>
+  //     <single-window v-for="(window, index) in savedWindows" 
+  //       :window-index="index"
+  //       :window="window" 
+  //       actions="dr"
+  //       :not-last="index != (savedWindows.length-1)"
+  //       group="saved">
+  //     </single-window>
+  //     <div id="remove-all-saved" @click="removeSaved">
+  //       Remove all saved windows
+  //     </div>
+  //   </template>
+    
+  //   <div class="section">Opened windows</div>
+  //   <single-window v-for="(window, index) in openedWindows" 
+  //     :window-index="index"
+  //     :window="window" 
+  //     actions="s"
+  //     :not-last="index != (openedWindows.length-1)"
+  //     group="opened">
+  //   </single-window>
+
+  //   <div class="vsep"></div>
+
+  //   <div id="status">
+  //       {{ logInStatus }}
+  //   </div>
+
+  //   <div class="button-row">
+  //     <div :class="{ fa: true, 'fa-google': !signedIn, 'fa-sign-out': signedIn }" 
+  //       id="sign-in-out" 
+  //       @click="signInOut"
+  //       :title="signedIn ? 'Click to sign out' : 'Click to log in to Google'"></div>
+  //     <div class="fa fa-question" id="help" title="Help" @click="openHelp"></div>
+  //   </div>
+  // </div>
+  // `
 });
