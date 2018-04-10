@@ -8,6 +8,12 @@ The reason for this extension is due to the reason that TabCloud does not suppor
 
 ## Changelog
 
+### 2018 - 04 - 10
+
+Firefox and Chrome extension (v.2.6)
+
+- Use vue.runtime.js to remove `unsafe-eval` from content security policy
+
 ### 2018 - 02 - 02
 
 Fix bug in Firefox extension which prevented logging in to Google account
