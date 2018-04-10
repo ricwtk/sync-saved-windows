@@ -1,47 +1,47 @@
-// ---------- refresh opened windows list ----------
+var dataPort;
+
 function refreshOpenedWindows() {
   browser.tabs.query({}).then((tabs) => {
-    openedWindows = [];
+    vueApp.openedWindows = [];
     for (let tab of tabs) {
-      let win = openedWindows.find(w => w.windowId == tab.windowId);
+      let win = vueApp.openedWindows.find(w => w.windowId == tab.windowId);
       if (win !== undefined) {
         win.tabs.push(tab);
       } else {
-        openedWindows.push({
+        vueApp.openedWindows.push({
           windowId: tab.windowId,
           tabs: [tab]
         });
       }
     }
     // sort tabs
-    for (let win of openedWindows) {
-      win.tabs.sort((t1,t2) => t1.index - t2.index);
+    for (let win of vueApp.openedWindows) {
+      win.tabs.sort((t1, t2) => t1.index - t2.index);
     }
     // sort windows
-    openedWindows.sort((w1,w2) => w1.index - w2.index);
-  }).then(updateOpenedWindows);
+    vueApp.openedWindows.sort((w1, w2) => w1.index - w2.index);
+  });
 }
 
-// ---------- create simple div ----------
+// ------------------------ Vue components --------------------------------
 
 Vue.component('single-window', {
   props: ['window', 'actions', 'notLast', 'windowIndex', 'group'],
-  created: function () {
-  },
+  created: function() {},
   methods: {
-    saveWindow: function () {
+    saveWindow: function() {
       dataPort.postMessage({
         "actions": ["save-window"],
         "save-window": this.window
       });
     },
-    removeWindow: function () {
+    removeWindow: function() {
       dataPort.postMessage({
         "actions": ["remove-window"],
         "remove-window": this.windowIndex
       });
     },
-    restoreWindow: function () {
+    restoreWindow: function() {
       browser.windows.create({
         url: this.window.tabs.map((t) => t.url)
       });
@@ -51,13 +51,13 @@ Vue.component('single-window', {
     return createElement("div", {
       class: {
         window: true,
-        addsep: this.notLast
+          addsep: this.notLast
       },
       attrs: {
         title: "Click on an icon to switch to tab"
       }
     }, [
-      createElement("div", { class: "tabswrapper" }, 
+      createElement("div", { class: "tabswrapper" },
         this.window.tabs.map(tab => createElement("single-tab", {
           props: {
             tab: tab,
@@ -100,35 +100,21 @@ Vue.component('single-window', {
   // `
 });
 
-// ---------- create single window ----------
-
-function createSingleWindow(param) {
-  // param.{notLast window group actions windowIndex}
-  var base = document.createElement("div");
-  base.title="Click on an icon to switch to tab";
-  base.classList.add("window");
-  if (param.notLast) {
-    base.classList.add("addsep");
-  }
-  var tabswrapper = document.createElement("div");
-  tabswrapper.classList.add("tabswrapper");
-  for (let i=0; i < param.window.tabs.length; i++) {
-    tabswrapper.appendChild(createSingleTab({tab: param.window.tabs[i], group: param.group}));
-  }
-  base.appendChild(tabswrapper);
-  if (param.actions.includes('s')) {
-    base.appendChild(createSimple({
-      class: ["savewinbtn", "fa", "fa-plus"],
-      title: "Save window",
-      click: function () {
-        dataPort.postMessage({
-          "actions": ["save-window"],
-          "save-window": param.window
+Vue.component('single-tab', {
+  props: ['tab', 'group'],
+  methods: {
+    onClick: function() {
+      if (this.group == "opened") {
+        browser.tabs.update(this.tab.id, { active: true });
+        browser.windows.update(this.tab.windowId, { focused: true });
+      } else if (this.group == "saved") {
+        browser.tabs.create({
+          url: this.tab.url
         });
       }
     }
   },
-  render: function (createElement) {
+  render: function(createElement) {
     if (this.tab.favIconUrl) {
       return createElement("img", {
         attrs: {
@@ -145,7 +131,7 @@ function createSingleWindow(param) {
           title: this.tab.title
         },
         on: { click: this.onClick }
-      }) 
+      })
     }
   },
   // template: `
@@ -154,73 +140,57 @@ function createSingleWindow(param) {
   // `
 });
 
-// ---------- create single tab ----------
-
-function createSingleTab(param) {
-  // param.{tab group}
-  var base;
-  if (param.tab.favIconUrl) {
-    base = document.createElement("img");
-    base.src = param.tab.favIconUrl;
-  } else {
-    base = document.createElement("i");
-    base.classList.add("fa", "fa-question-circle");
-  }
-  base.title = param.tab.title;
-  base.classList.add("favicon");
-  base.addEventListener("click", function () {
-    if (param.group == "opened") {
-      browser.tabs.update(param.tab.id, {active: true});
-      browser.windows.update(param.tab.windowId, {focused: true});
-    } else if (param.group == "saved") {
-      browser.tabs.create({
-        url: param.tab.url
-      });
+var vueApp = new Vue({
+  el: "#main",
+  data: {
+    openedWindows: [],
+    savedWindows: [],
+    signedIn: false,
+    useLocal: true,
+    remoteAccount: ""
+  },
+  computed: {
+    logInStatus: function() {
+      if (!this.useLocal && this.signedIn) {
+        return "Signed in as " + this.remoteAccount;
+      } else {
+        return "Data saved locally";
+      }
     }
-  });
-  return base;
-}
+  },
+  created: function() {
+    // get saved windows
+    dataPort = browser.runtime.connect({ name: "popup-background" });
+    dataPort.onMessage.addListener(m => {
+      console.log("Received from background.js", m);
+      let mKeys = Object.keys(m);
+      if (mKeys.includes("saved-windows")) this.savedWindows = m["saved-windows"];
+      if (mKeys.includes("use-local")) this.useLocal = m["use-local"];
+      if (mKeys.includes("signed-in")) this.signedIn = m["signed-in"];
+      if (mKeys.includes("remote-account")) this.remoteAccount = m["remote-account"];
+    });
 
-// ---------- update log in status ----------
-function updateLogInStatus () {
-  var el = document.getElementById("status");
-  if (!useLocal && signedIn) {
-    el.innerText = "Signed in as " + remoteAccount;
-  } else {
-    el.innerText = "Data saved locally";
-  }
-}
+    dataPort.postMessage({ actions: ["refresh", "saved-windows", "use-local", "signed-in", "remote-account"] });
 
-// ---------- update log in button ----------
-function updateLogInButton () {
-  var el = document.getElementById("sign-in-out");
-  if (signedIn) {
-    el.classList.add("fa-sign-out");
-    el.classList.remove("fa-google");
-    el.title = "Click to sign out";
-  } else {
-    el.classList.remove("fa-sign-out");
-    el.classList.add("fa-google");
-    el.title = "Click to log in to Google";
-  }
-}
+    // get opened windows
+    refreshOpenedWindows();
 
     // add listener
     browser.tabs.onCreated.addListener(refreshOpenedWindows);
     browser.tabs.onRemoved.addListener(refreshOpenedWindows);
   },
   methods: {
-    removeSaved: function () {
-      dataPort.postMessage({actions: ["remove-all-windows"]});
+    removeSaved: function() {
+      dataPort.postMessage({ actions: ["remove-all-windows"] });
     },
-    signInOut: function () {
+    signInOut: function() {
       dataPort.postMessage({ actions: ["sign-in-out"] });
     },
-    openHelp: function () {
+    openHelp: function() {
       window.open("doc/help.html");
     },
   },
-  render: function (createElement) {
+  render: function(createElement) {
     let children = [];
     children.push(createElement("div", { class: "section" }, "Saved windows"));
 
@@ -264,11 +234,11 @@ function updateLogInButton () {
     children.push(createElement("div", { attrs: { id: "status" } }, this.logInStatus));
 
     children.push(createElement("div", { class: "button-row" }, [
-      createElement("div", { 
+      createElement("div", {
         class: {
           fa: true,
-          "fa-google": !this.signedIn,
-          "fa-sign-out": this.signedIn
+            "fa-google": !this.signedIn,
+            "fa-sign-out": this.signedIn
         },
         attrs: {
           id: "sign-in-out",
@@ -310,7 +280,7 @@ function updateLogInButton () {
   //       Remove all saved windows
   //     </div>
   //   </template>
-    
+
   //   <div class="section">Opened windows</div>
   //   <single-window v-for="(window, index) in openedWindows" 
   //     :window-index="index"
@@ -336,19 +306,3 @@ function updateLogInButton () {
   // </div>
   // `
 });
-
-dataPort.postMessage({actions: ["refresh", "saved-windows", "use-local", "signed-in", "remote-account"]});
-
-// get opened windows
-refreshOpenedWindows();
-updateSavedWindows();
-updateLogInStatus();
-updateLogInButton();
-
-// add listener
-browser.tabs.onCreated.addListener(refreshOpenedWindows);
-browser.tabs.onRemoved.addListener(refreshOpenedWindows);
-
-// add click listener
-document.getElementById("help").addEventListener("click", () => window.open("doc/help.html"));
-document.getElementById("sign-in-out").addEventListener("click", () => dataPort.postMessage({ actions: ["sign-in-out"] }));
