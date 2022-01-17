@@ -1,10 +1,14 @@
 # SyncSavedWindows
 
-Sync saved windows. Inspired by TabCloud (https://addons.mozilla.org/en-GB/firefox/addon/tabcloud/).
+Sync saved windows.
 
-This extension provides a toolbar button with a popup of a list of saved and opened windows. List can be synchronised through Google account.
+Available for Firefox here: https://addons.mozilla.org/firefox/addon/sync-saved-windows/
 
-The reason for this extension is due to the reason that TabCloud does not support Firefox Quantum.
+This extension provides a toolbar button with a popup of a list of saved and opened windows. List can be synchronised through Firefox/Google account.
+
+Inspired by [TabCloud](https://web.archive.org/web/20181102003417/https://addons.mozilla.org/en-US/firefox/addon/tabcloud/).
+
+The reason for this extension is because TabCloud does not support Firefox Quantum (Firefox 57+).
 
 ## Changelog
 
